@@ -46,7 +46,7 @@ func IsFullCardinality() bool {
 }
 
 // List the content of the defaulTagger
-func List(highCard bool) TaggerListResponse {
+func List(highCard bool) ListResponse {
 	return defaultTagger.List(highCard)
 }
 

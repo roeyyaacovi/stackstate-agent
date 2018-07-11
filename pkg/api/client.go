@@ -13,7 +13,7 @@ import (
 	"github.com/DataDog/datadog-agent/pkg/config"
 )
 
-// RetriveJSON allows to quickly query and api as JSON
+// RetrieveJSON allows to quickly query an api endpoint as JSON
 func RetrieveJSON(path string, target interface{}) error {
 	c := util.GetClient(false) // FIX: get certificates right then make this true
 	url := fmt.Sprintf("https://localhost:%v/%s", config.Datadog.GetInt("cmd_port"), path)

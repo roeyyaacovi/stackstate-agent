@@ -5,13 +5,13 @@
 
 package tagger
 
-// TaggerListResponse holds the tagger list response
-type TaggerListResponse struct {
-	Entities map[string]TaggerListEntity `json:"entities"`
+// ListResponse holds all info in store
+type ListResponse struct {
+	Entities map[string]ListEntity `json:"entities"`
 }
 
-// TaggerListEntity holds the tagging info about an entity
-type TaggerListEntity struct {
+// ListEntity holds the tagging info about an entity
+type ListEntity struct {
 	Sources []string `json:"sources"`
 	Tags    []string `json:"tags"`
 }

@@ -17,7 +17,5 @@ func SetupHandlers(r *mux.Router) {
 	// From pkg/tagger/api
 	r.HandleFunc("/tagger-list", taggerapi.ListHandler).Methods("GET")
 	// From pkg/status/api
-	r.HandleFunc("/status", statusapi.StatusHandler).Methods("GET")
-	r.HandleFunc("/status/formatted", statusapi.FormattedStatusHandler).Methods("GET")
 	r.HandleFunc("/status/health", statusapi.HealthHandler).Methods("GET")
 }

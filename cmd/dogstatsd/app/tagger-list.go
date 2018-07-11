@@ -23,7 +23,7 @@ var taggerListCommand = &cobra.Command{
 	Long:         ``,
 	SilenceUsage: true,
 	RunE: func(cmd *cobra.Command, args []string) error {
-		tr := &tagger.TaggerListResponse{}
+		tr := &tagger.ListResponse{}
 		err := api.RetrieveJSON("/dogstatsd/tagger-list", tr)
 		if err != nil {
 			return err

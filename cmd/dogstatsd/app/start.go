@@ -6,11 +6,11 @@
 package app
 
 import (
-	_ "expvar"
+	_ "expvar" // Expose internal metrics via expvar
 	"fmt"
 	"net"
 	"net/http"
-	_ "net/http/pprof"
+	_ "net/http/pprof" // Pprof for debugging/profiling
 	"os"
 	"os/signal"
 	"syscall"

@@ -13,6 +13,7 @@ import (
 	"github.com/DataDog/datadog-agent/pkg/config"
 )
 
+// Server manages the lifecycle of the HTTPS API server
 type Server struct {
 	m           sync.RWMutex
 	tlsListener net.Listener
@@ -21,6 +22,7 @@ type Server struct {
 	listening   bool
 }
 
+// NewServer instanciates a Server with the given parameters
 func NewServer(listener net.Listener, tlsConfig *tls.Config, validators ...mux.MiddlewareFunc) *Server {
 	s := &Server{
 		router:    mux.NewRouter(),
@@ -44,7 +46,7 @@ func NewServer(listener net.Listener, tlsConfig *tls.Config, validators ...mux.M
 	return s
 }
 
-// Router allows to access the router, to register endpoints
+// Router exposes the router to register endpoints
 func (s *Server) Router() *mux.Router {
 	return s.router
 }

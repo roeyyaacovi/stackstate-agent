@@ -22,7 +22,7 @@ var taggerListCommand = &cobra.Command{
 	Short: "Print the tagger content of a running agent",
 	Long:  ``,
 	RunE: func(cmd *cobra.Command, args []string) error {
-		tr := &tagger.TaggerListResponse{}
+		tr := &tagger.ListResponse{}
 		err := api.RetrieveJSON("/agent/tagger-list", tr)
 		if err != nil {
 			return err

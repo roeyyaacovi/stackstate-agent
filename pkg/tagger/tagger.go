@@ -271,15 +271,15 @@ IterCollectors:
 }
 
 // List the content of the tagger
-func (t *Tagger) List(highCard bool) TaggerListResponse {
-	r := TaggerListResponse{
-		Entities: make(map[string]TaggerListEntity),
+func (t *Tagger) List(highCard bool) ListResponse {
+	r := ListResponse{
+		Entities: make(map[string]ListEntity),
 	}
 
 	t.tagStore.storeMutex.RLock()
 	defer t.tagStore.storeMutex.RUnlock()
 	for entityID, et := range t.tagStore.store {
-		entity := TaggerListEntity{}
+		entity := ListEntity{}
 		tags, sources, _ := et.get(highCard)
 		entity.Tags = copyArray(tags)
 		entity.Sources = copyArray(sources)

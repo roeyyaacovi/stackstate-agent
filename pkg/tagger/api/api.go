@@ -31,7 +31,8 @@ func ListHandler(w http.ResponseWriter, r *http.Request) {
 	w.Write(jsonTags)
 }
 
-func PrintList(tr *tagger.TaggerListResponse) error {
+// PrintList prints a ListResponse as human-readable text
+func PrintList(tr *tagger.ListResponse) error {
 	for entity, tagItem := range tr.Entities {
 		fmt.Fprintln(color.Output, fmt.Sprintf("\n=== Entity %s ===", color.GreenString(entity)))
 

@@ -16,6 +16,7 @@ import (
 	"github.com/DataDog/datadog-agent/pkg/status/health"
 )
 
+// PrintHealth prints the health Status as human-readable text
 func PrintHealth(s *health.Status, name string) error {
 	sort.Strings(s.Unhealthy)
 	sort.Strings(s.Healthy)
