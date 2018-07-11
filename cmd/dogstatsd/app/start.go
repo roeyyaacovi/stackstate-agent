@@ -3,13 +3,12 @@
 // This product includes software developed at Datadog (https://www.datadoghq.com/).
 // Copyright 2018 Datadog, Inc.
 
-//go:generate go run ../../pkg/config/render_config.go dogstatsd ../../pkg/config/config_template.yaml ./dist/dogstatsd.yaml
-
-package main
+package app
 
 import (
 	_ "expvar"
 	"fmt"
+	"net"
 	"net/http"
 	_ "net/http/pprof"
 	"os"
@@ -17,10 +16,12 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/DataDog/datadog-agent/pkg/util/log"
 	"github.com/spf13/cobra"
 
 	"github.com/DataDog/datadog-agent/pkg/aggregator"
+	"github.com/DataDog/datadog-agent/pkg/api"
+	"github.com/DataDog/datadog-agent/pkg/api/security"
+	apiutil "github.com/DataDog/datadog-agent/pkg/api/util"
 	"github.com/DataDog/datadog-agent/pkg/config"
 	"github.com/DataDog/datadog-agent/pkg/dogstatsd"
 	"github.com/DataDog/datadog-agent/pkg/forwarder"
@@ -28,36 +29,15 @@ import (
 	"github.com/DataDog/datadog-agent/pkg/serializer"
 	"github.com/DataDog/datadog-agent/pkg/tagger"
 	"github.com/DataDog/datadog-agent/pkg/util"
-	"github.com/DataDog/datadog-agent/pkg/version"
+	"github.com/DataDog/datadog-agent/pkg/util/log"
 )
 
 var (
-	// dogstatsdCmd is the root command
-	dogstatsdCmd = &cobra.Command{
-		Use:   "dogstatsd [command]",
-		Short: "Datadog dogstatsd at your service.",
-		Long: `
-DogStatsD accepts custom application metrics points over UDP, and then
-periodically aggregates and forwards them to Datadog, where they can be graphed
-on dashboards. DogStatsD implements the StatsD protocol, along with a few
-extensions for special Datadog features.`,
-	}
-
 	startCmd = &cobra.Command{
 		Use:   "start",
 		Short: "Start DogStatsD",
 		Long:  `Runs DogStatsD in the foreground`,
 		RunE:  start,
-	}
-
-	versionCmd = &cobra.Command{
-		Use:   "version",
-		Short: "Print the version number",
-		Long:  ``,
-		Run: func(cmd *cobra.Command, args []string) {
-			av, _ := version.New(version.AgentVersion, version.Commit)
-			fmt.Println(fmt.Sprintf("DogStatsD from Agent %s - Codename: %s - Commit: %s - Serialization version: %s", av.GetNumber(), av.Meta, av.Commit, serializer.AgentPayloadVersion))
-		},
 	}
 
 	confPath   string
@@ -68,19 +48,20 @@ extensions for special Datadog features.`,
 const hostMetadataCollectorInterval = 14400
 
 func init() {
-	// attach the command to the root
-	dogstatsdCmd.AddCommand(startCmd)
-	dogstatsdCmd.AddCommand(versionCmd)
+	DogstatsdCmd.AddCommand(startCmd)
 
 	// local flags
-	startCmd.Flags().StringVarP(&confPath, "cfgpath", "c", "", "path to folder containing dogstatsd.yaml")
-	config.Datadog.BindPFlag("conf_path", startCmd.Flags().Lookup("cfgpath"))
 	startCmd.Flags().StringVarP(&socketPath, "socket", "s", "", "listen to this socket instead of UDP")
 	config.Datadog.BindPFlag("dogstatsd_socket", startCmd.Flags().Lookup("socket"))
 }
 
 func start(cmd *cobra.Command, args []string) error {
 	configFound := false
+
+	// go_expvar server
+	go http.ListenAndServe(
+		fmt.Sprintf("127.0.0.1:%d", config.Datadog.GetInt("dogstatsd_stats_port")),
+		http.DefaultServeMux)
 
 	// a path to the folder containing the config file was passed
 	if len(confPath) != 0 {
@@ -126,6 +107,13 @@ func start(cmd *cobra.Command, args []string) error {
 
 	if !config.Datadog.IsSet("api_key") {
 		log.Critical("no API key configured, exiting")
+		return nil
+	}
+
+	// setup the API port and server
+	apiServer, err := startAPIServer()
+	if err != nil {
+		log.Criticalf("Error while starting api server,: %s", err)
 		return nil
 	}
 
@@ -187,19 +175,32 @@ func start(cmd *cobra.Command, args []string) error {
 		metaScheduler.Stop()
 	}
 	statsd.Stop()
+	apiServer.Stop()
 	log.Info("See ya!")
 	log.Flush()
 	return nil
 }
 
-func main() {
-	// go_expvar server
-	go http.ListenAndServe(
-		fmt.Sprintf("127.0.0.1:%d", config.Datadog.GetInt("dogstatsd_stats_port")),
-		http.DefaultServeMux)
-
-	if err := dogstatsdCmd.Execute(); err != nil {
-		log.Error(err)
-		os.Exit(-1)
+func startAPIServer() (*api.Server, error) {
+	// Generate the auth token for client requests
+	err := apiutil.SetAuthToken()
+	if err != nil {
+		return nil, err
 	}
+
+	// Setup the underlying TCP transport
+	listener, err := net.Listen("tcp", fmt.Sprintf("localhost:%v", config.Datadog.GetInt("cmd_port")))
+	if err != nil {
+		return nil, err
+	}
+
+	// Setup the HTTPS server
+	tlsConfig, err := security.GenerateSelfSignedConfig(api.LocalhostHosts)
+	if err != nil {
+		return nil, err
+	}
+	server := api.NewServer(listener, tlsConfig, api.DefaultTokenValidator)
+	server.Start()
+
+	return server, nil
 }

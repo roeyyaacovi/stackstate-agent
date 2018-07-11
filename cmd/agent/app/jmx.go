@@ -11,6 +11,8 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/spf13/cobra"
+
 	"github.com/DataDog/datadog-agent/cmd/agent/api"
 	"github.com/DataDog/datadog-agent/cmd/agent/common"
 	"github.com/DataDog/datadog-agent/pkg/autodiscovery/integration"
@@ -18,7 +20,6 @@ import (
 	"github.com/DataDog/datadog-agent/pkg/collector/corechecks/embed/jmx"
 	"github.com/DataDog/datadog-agent/pkg/config"
 	"github.com/DataDog/datadog-agent/pkg/jmxfetch"
-	"github.com/spf13/cobra"
 )
 
 var (
@@ -157,7 +158,7 @@ func runJmxCommand(command string) error {
 
 	runner.ReportOnConsole = true
 	runner.Command = command
-	runner.IPCPort = api.ServerAddress().Port
+	runner.IPCPort = config.Datadog.GetInt("cmd_port")
 
 	loadConfigs()
 
