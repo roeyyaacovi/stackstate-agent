@@ -61,11 +61,6 @@ func start(cmd *cobra.Command, args []string) error {
 		fmt.Sprintf("127.0.0.1:%d", config.Datadog.GetInt("dogstatsd_stats_port")),
 		http.DefaultServeMux)
 
-	if !config.Datadog.IsSet("api_key") {
-		log.Critical("no API key configured, exiting")
-		return nil
-	}
-
 	// Setup logger
 	syslogURI := config.GetSyslogURI()
 	logFile := config.Datadog.GetString("log_file")
@@ -88,6 +83,11 @@ func start(cmd *cobra.Command, args []string) error {
 	)
 	if err != nil {
 		log.Criticalf("Unable to setup logger: %s", err)
+		return nil
+	}
+
+	if !config.Datadog.IsSet("api_key") {
+		log.Critical("no API key configured, exiting")
 		return nil
 	}
 

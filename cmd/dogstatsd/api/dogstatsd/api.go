@@ -9,10 +9,13 @@ import (
 	"github.com/gorilla/mux"
 
 	statusapi "github.com/DataDog/datadog-agent/pkg/status/api"
+	taggerapi "github.com/DataDog/datadog-agent/pkg/tagger/api"
 )
 
 // SetupHandlers adds the specific handlers for /agent endpoints
 func SetupHandlers(r *mux.Router) {
+	// From pkg/tagger/api
+	r.HandleFunc("/tagger-list", taggerapi.ListHandler).Methods("GET")
 	// From pkg/status/api
 	r.HandleFunc("/status", statusapi.StatusHandler).Methods("GET")
 	r.HandleFunc("/status/formatted", statusapi.FormattedStatusHandler).Methods("GET")
