@@ -28,6 +28,6 @@ var healthCmd = &cobra.Command{
 		if err != nil {
 			return err
 		}
-		return statusapi.PrintHealth(s)
+		return statusapi.PrintHealth(s, "Dogstatsd")
 	},
 }

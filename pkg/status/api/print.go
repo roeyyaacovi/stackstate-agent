@@ -16,7 +16,7 @@ import (
 	"github.com/DataDog/datadog-agent/pkg/status/health"
 )
 
-func PrintHealth(s *health.Status) error {
+func PrintHealth(s *health.Status, name string) error {
 	sort.Strings(s.Unhealthy)
 	sort.Strings(s.Healthy)
 
@@ -24,7 +24,7 @@ func PrintHealth(s *health.Status) error {
 	if len(s.Unhealthy) > 0 {
 		statusString = color.RedString("FAIL")
 	}
-	fmt.Fprintln(color.Output, fmt.Sprintf("Agent health: %s", statusString))
+	fmt.Fprintln(color.Output, fmt.Sprintf("%s health: %s", name, statusString))
 
 	if len(s.Healthy) > 0 {
 		fmt.Fprintln(color.Output, fmt.Sprintf("=== %s healthy components ===", color.GreenString(strconv.Itoa(len(s.Healthy)))))

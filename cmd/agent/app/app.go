@@ -36,7 +36,7 @@ monitoring and performance data.`,
 )
 
 // preRun takes care of common setup, including for now:
-//   - parsin of the configuration
+//   - parsing of the configuration
 //   - handling of the no-color flag
 func preRun(_ *cobra.Command, _ []string) error {
 	if flagNoColor {

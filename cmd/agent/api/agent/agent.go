@@ -28,7 +28,7 @@ import (
 	"github.com/DataDog/datadog-agent/pkg/config"
 	"github.com/DataDog/datadog-agent/pkg/flare"
 	statusapi "github.com/DataDog/datadog-agent/pkg/status/api"
-	"github.com/DataDog/datadog-agent/pkg/tagger"
+	taggerapi "github.com/DataDog/datadog-agent/pkg/tagger/api"
 	"github.com/DataDog/datadog-agent/pkg/util"
 	"github.com/DataDog/datadog-agent/pkg/version"
 )
@@ -44,7 +44,8 @@ func SetupHandlers(r *mux.Router) {
 	r.HandleFunc("/{component}/configs", componentConfigHandler).Methods("GET")
 	r.HandleFunc("/gui/csrf-token", getCSRFToken).Methods("GET")
 	r.HandleFunc("/config-check", getConfigCheck).Methods("GET")
-	r.HandleFunc("/tagger-list", getTaggerList).Methods("GET")
+	// From pkg/tagger/api
+	r.HandleFunc("/tagger-list", taggerapi.ListHandler).Methods("GET")
 	// From pkg/status/api
 	r.HandleFunc("/status", statusapi.StatusHandler).Methods("GET")
 	r.HandleFunc("/status/formatted", statusapi.FormattedStatusHandler).Methods("GET")
@@ -175,17 +176,4 @@ func getConfigCheck(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.Write(jsonConfig)
-}
-
-func getTaggerList(w http.ResponseWriter, r *http.Request) {
-	response := tagger.List(tagger.IsFullCardinality())
-
-	jsonTags, err := json.Marshal(response)
-	if err != nil {
-		log.Errorf("Unable to marshal tagger list response: %s", err)
-		body, _ := json.Marshal(map[string]string{"error": err.Error()})
-		http.Error(w, string(body), 500)
-		return
-	}
-	w.Write(jsonTags)
 }
