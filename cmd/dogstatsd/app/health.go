@@ -14,17 +14,17 @@ import (
 )
 
 func init() {
-	AgentCmd.AddCommand(healthCmd)
+	DogstatsdCmd.AddCommand(healthCmd)
 }
 
 var healthCmd = &cobra.Command{
 	Use:          "health",
-	Short:        "Print the current agent health",
+	Short:        "Print the current dogstatsd health",
 	Long:         ``,
 	SilenceUsage: true,
 	RunE: func(cmd *cobra.Command, args []string) error {
 		s := new(health.Status)
-		err := api.RetrieveJSON("/agent/status/health", s)
+		err := api.RetrieveJSON("/dogstatsd/status/health", s)
 		if err != nil {
 			return err
 		}

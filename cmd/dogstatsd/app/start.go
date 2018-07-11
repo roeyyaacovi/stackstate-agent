@@ -18,6 +18,7 @@ import (
 
 	"github.com/spf13/cobra"
 
+	dogstatsdapi "github.com/DataDog/datadog-agent/cmd/dogstatsd/api/dogstatsd"
 	"github.com/DataDog/datadog-agent/pkg/aggregator"
 	"github.com/DataDog/datadog-agent/pkg/api"
 	"github.com/DataDog/datadog-agent/pkg/api/security"
@@ -40,7 +41,6 @@ var (
 		RunE:  start,
 	}
 
-	confPath   string
 	socketPath string
 )
 
@@ -56,28 +56,14 @@ func init() {
 }
 
 func start(cmd *cobra.Command, args []string) error {
-	configFound := false
-
 	// go_expvar server
 	go http.ListenAndServe(
 		fmt.Sprintf("127.0.0.1:%d", config.Datadog.GetInt("dogstatsd_stats_port")),
 		http.DefaultServeMux)
 
-	// a path to the folder containing the config file was passed
-	if len(confPath) != 0 {
-		// we'll search for a config file named `dogstastd.yaml`
-		config.Datadog.SetConfigName("dogstatsd")
-		config.Datadog.AddConfigPath(confPath)
-		confErr := config.Load()
-		if confErr != nil {
-			log.Error(confErr)
-		} else {
-			configFound = true
-		}
-	}
-
-	if !configFound {
-		log.Infof("Config will be read from env variables")
+	if !config.Datadog.IsSet("api_key") {
+		log.Critical("no API key configured, exiting")
+		return nil
 	}
 
 	// Setup logger
@@ -102,11 +88,6 @@ func start(cmd *cobra.Command, args []string) error {
 	)
 	if err != nil {
 		log.Criticalf("Unable to setup logger: %s", err)
-		return nil
-	}
-
-	if !config.Datadog.IsSet("api_key") {
-		log.Critical("no API key configured, exiting")
 		return nil
 	}
 
@@ -200,6 +181,8 @@ func startAPIServer() (*api.Server, error) {
 		return nil, err
 	}
 	server := api.NewServer(listener, tlsConfig, api.DefaultTokenValidator)
+
+	dogstatsdapi.SetupHandlers(server.Router().PathPrefix("/dogstatsd").Subrouter())
 	server.Start()
 
 	return server, nil

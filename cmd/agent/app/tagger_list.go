@@ -12,7 +12,6 @@ import (
 
 	"github.com/DataDog/datadog-agent/cmd/agent/api/response"
 
-	"github.com/DataDog/datadog-agent/cmd/agent/common"
 	"github.com/DataDog/datadog-agent/pkg/api/util"
 	"github.com/DataDog/datadog-agent/pkg/config"
 
@@ -31,17 +30,10 @@ var taggerListCommand = &cobra.Command{
 	Short: "Print the tagger content of a running agent",
 	Long:  ``,
 	RunE: func(cmd *cobra.Command, args []string) error {
-		err := common.SetupConfig(confFilePath)
-		if err != nil {
-			return fmt.Errorf("unable to set up global agent configuration: %v", err)
-		}
-		if flagNoColor {
-			color.NoColor = true
-		}
 		c := util.GetClient(false) // FIX: get certificates right then make this true
 
 		// Set session token
-		err = util.SetAuthToken()
+		err := util.SetAuthToken()
 		if err != nil {
 			return err
 		}

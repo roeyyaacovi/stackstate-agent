@@ -60,7 +60,6 @@ func newTagger() *Tagger {
 		pruneTicker: time.NewTicker(5 * time.Minute),
 		retryTicker: time.NewTicker(30 * time.Second),
 		stop:        make(chan bool),
-		health:      health.Register("tagger"),
 	}
 }
 
@@ -78,6 +77,7 @@ func (t *Tagger) Init(catalog collectors.Catalog) {
 
 	log.Info("starting the tagging system")
 
+	t.health = health.Register("tagger")
 	t.startCollectors()
 	go t.run()
 	go t.pull()

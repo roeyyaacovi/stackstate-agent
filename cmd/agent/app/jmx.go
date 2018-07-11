@@ -149,11 +149,6 @@ func runJmxCommand(command string) error {
 		return err
 	}
 
-	err = setupAgent()
-	if err != nil {
-		return err
-	}
-
 	runner := &jmxfetch.JMXFetch{}
 
 	runner.ReportOnConsole = true
