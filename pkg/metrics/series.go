@@ -11,6 +11,7 @@ import (
 	"errors"
 	"expvar"
 	"fmt"
+	"github.com/StackVista/stackstate-agent/pkg/config"
 	"strings"
 	"unsafe"
 
@@ -33,6 +34,7 @@ var (
 	jsonSeparator  = []byte(",")
 	jsonArrayStart = []byte("[")
 	jsonArrayEnd   = []byte("]")
+	metricBlacklist = config.GetMetricBlacklist()
 )
 
 // Point represents a metric value at a specific time

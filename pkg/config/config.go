@@ -8,9 +8,11 @@ package config
 import (
 	"bytes"
 	"fmt"
+	"github.com/StackVista/stackstate-agent/pkg/trace/config"
 	"net/url"
 	"os"
 	"path/filepath"
+	"regexp"
 	"strings"
 	"time"
 
@@ -120,6 +122,9 @@ func initConfig(config Config) {
 	config.BindEnvAndSetDefault("bind_host", "localhost")
 	config.BindEnvAndSetDefault("health_port", int64(0))
 	config.BindEnvAndSetDefault("disable_py3_validation", false)
+
+	// metric blacklist
+	config.BindEnvAndSetDefault("metrics_blacklist.patterns", []string{})
 
 	// if/when the default is changed to true, make the default platform
 	// dependent; default should remain false on Windows to maintain backward
@@ -684,4 +689,42 @@ func applyOverrides(config Config) {
 	for k, v := range overrideVars {
 		config.Set(k, v)
 	}
+}
+
+// GetMetricBlacklist get all the configured blacklist patterns for metrics that we don't want to send to the API
+func GetMetricBlacklist() []*regexp.Regexp {
+	patterns := make([]*regexp.Regexp, 0)
+	if blacklist := Datadog.GetStringSlice("metrics_blacklist.patterns"); blacklist != nil && len(blacklist) != 0 {
+		patterns = mapConstructRegex(constructRegex, blacklist)
+	}
+
+	return patterns
+}
+
+// mapConstructRegex returns a list where each string regex of the input list has been converted into a valid regex pattern.
+func mapConstructRegex(f func(string) *regexp.Regexp, list []string) []*regexp.Regexp {
+	out := make([]*regexp.Regexp, len(list))
+	for i, elem := range list {
+		out[i] = f(elem)
+	}
+	return out
+}
+
+
+func constructRegex(pattern string) *regexp.Regexp {
+	r, err := regexp.Compile(pattern)
+	if err != nil {
+		log.Warnf("Invalid blacklist pattern: %s", pattern)
+	}
+	return r
+}
+
+// IsMetricBlacklisted returns a boolean indicating if the given metric is blacklisted by our config.
+func IsMetricBlacklisted(metric string, blacklist []*regexp.Regexp) bool {
+	for _, b := range blacklist {
+		if b.MatchString(metric) {
+			return true
+		}
+	}
+	return false
 }

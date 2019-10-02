@@ -5,6 +5,12 @@ sts_url:
 # The StackState api key to associate your Agent's data with your organization.
 api_key:
 
+# metric blacklist can be used to filter unwanted metrics.
+metrics_blacklist:
+  # A list of regex patterns that will exclude a metric if matched.
+  patterns:
+    - "docker.*"
+
 # If you need a proxy to connect to the Internet, provide it here (default:
 # disabled). You can use the 'no_proxy' list to specify hosts that should
 # bypass the proxy. These settings might impact your checks requests, please
