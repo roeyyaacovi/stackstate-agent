@@ -1,6 +1,6 @@
 # StackState Agent v2 releases
 
-## 2.0.5 ( ??? )
+## 2.0.5 (2019-10-10)
 
 **Features**
 
