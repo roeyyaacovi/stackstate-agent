@@ -459,8 +459,11 @@ pre_release_cluster_agent_image:
 
 molecule_tests_vms:
   stage: acceptance
+  image: python:3.7.4-buster
   dependencies: []
-  before_script: []
+  before_script:
+    - pip install --upgrade pip
+    - pip install virtualenv
   script:
     - export AWS_ACCESS_KEY_ID=${MOLECULE_AWS_ACCESS_KEY_ID}
     - export AWS_SECRET_ACCESS_KEY=${MOLECULE_AWS_SECRET_ACCESS_KEY}
@@ -476,8 +479,11 @@ molecule_tests_vms:
 
 molecule_tests_compose:
   stage: acceptance
+  image: python:3.7.4-buster
   dependencies: []
-  before_script: []
+  before_script:
+    - pip install --upgrade pip
+    - pip install virtualenv
   script:
     - export AWS_ACCESS_KEY_ID=${MOLECULE_AWS_ACCESS_KEY_ID}
     - export AWS_SECRET_ACCESS_KEY=${MOLECULE_AWS_SECRET_ACCESS_KEY}
@@ -493,8 +499,11 @@ molecule_tests_compose:
 
 molecule_tests_kubernetes:
   stage: acceptance
+  image: python:3.7.4-buster
   dependencies: []
-  before_script: []
+  before_script:
+    - pip install --upgrade pip
+    - pip install virtualenv
   script:
    - export AWS_ACCESS_KEY_ID=${MOLECULE_AWS_ACCESS_KEY_ID}
    - export AWS_SECRET_ACCESS_KEY=${MOLECULE_AWS_SECRET_ACCESS_KEY}
