@@ -16,7 +16,7 @@ def test_stackstate_agent_is_installed(host, common_vars):
         assert agent.version.startswith("2")
 
 
-def test_stackstate_agent_status_output_no_datadog(host, common_vars):
+def test_stackstate_agent_status_output_no_datadog(host):
     status_cmd = host.run("sudo -u stackstate-agent -- stackstate-agent status")
     print(status_cmd)
     # assert that the status command ran successfully and that datadog is not contained in the output
