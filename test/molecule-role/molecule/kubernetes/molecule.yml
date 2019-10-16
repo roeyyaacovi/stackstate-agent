@@ -29,7 +29,5 @@ scenario:
   name: kubernetes
 verifier:
   name: testinfra
-  env:
-    PYTHONPATH: ../common_tests
   lint:
     name: flake8

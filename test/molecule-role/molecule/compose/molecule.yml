@@ -28,7 +28,5 @@ scenario:
   name: compose
 verifier:
   name: testinfra
-  env:
-    PYTHONPATH: ../common_tests
   lint:
     name: flake8
