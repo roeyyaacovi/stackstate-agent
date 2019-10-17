@@ -56,10 +56,6 @@
           "value": "${STS_URL}"
         },
         {
-          "name": "STS_PROCESS_AGENT_URL",
-          "value": "${STS_URL}"
-        },
-        {
           "name": "LOG_LEVEL",
           "value": "${LOG_LEVEL}"
         },
