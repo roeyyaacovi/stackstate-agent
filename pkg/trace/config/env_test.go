@@ -90,6 +90,19 @@ func TestLoadEnv(t *testing.T) {
 				assert.Equal("my-site.com", cfg.Endpoints[0].Host)
 			})
 
+			// STS
+			// Check DD URL is fallback for APM
+			env = "DD_DD_URL"
+			t.Run(env, func(t *testing.T) {
+				assert := assert.New(t)
+				err := os.Setenv(env, "my-site.com")
+				assert.NoError(err)
+				defer os.Unsetenv(env)
+				cfg, err := Load("./testdata/full." + ext)
+				assert.NoError(err)
+				assert.Equal("my-site.com", cfg.Endpoints[0].Host)
+			})
+			// STS
 			env = "HTTPS_PROXY"
 			t.Run(env, func(t *testing.T) {
 				assert := assert.New(t)

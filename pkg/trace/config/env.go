@@ -30,6 +30,9 @@ func applyEnv() {
 		{"DD_APM_ENABLED", "apm_config.enabled"},
 		{"DD_APM_ENV", "apm_config.env"},
 		{"DD_APM_NON_LOCAL_TRAFFIC", "apm_config.apm_non_local_traffic"},
+		//STS
+		{"DD_DD_URL", "apm_config.apm_dd_url"},
+		//STS
 		{"DD_APM_DD_URL", "apm_config.apm_dd_url"},
 		{"DD_RECEIVER_PORT", "apm_config.receiver_port"}, // deprecated
 		{"DD_APM_RECEIVER_PORT", "apm_config.receiver_port"},
