@@ -102,6 +102,15 @@ def test_cluster_agent_topology(host, common_vars):
             cluster_name=cluster_name,
             identifiers_assert_fn=lambda identifiers: next(x for x in identifiers if x.startswith("urn:endpoint:/%s:" % cluster_name))
         )
+        # 1 service, pod-service for dnat
+        assert _component_data(
+            json_data=json_data,
+            type_name="service",
+            external_id_assert_fn=lambda eid: eid.startswith("urn:/kubernetes:%s:service:%s:pod-service" % (cluster_name, namespace)),
+            cluster_name=cluster_name,
+            identifiers_assert_fn=lambda identifiers: next(x for x in identifiers if x.startswith("urn:endpoint:/%s:" % cluster_name))
+        )
+
         # Pod -> Node (scheduled on)
         # stackstate-agent pods is scheduled_on a node (2 times)
         node_agent_pod_scheduled_match = re.compile("urn:/kubernetes:%s:pod:stackstate-agent-.*->urn:/kubernetes:%s:node:ip-.*" % (cluster_name, cluster_name))
@@ -155,5 +164,11 @@ def test_cluster_agent_topology(host, common_vars):
             type_name="exposes",
             external_id_assert_fn=lambda eid:  cluster_agent_service_match.findall(eid)
         ).startswith("urn:/kubernetes:%s:service:%s:stackstate-cluster-agent" % (cluster_name, namespace))
-
+        # pod-service exposes pod-server (1 time)
+        pod_service_match = re.compile("urn:/kubernetes:%s:service:%s:pod-service->urn:/kubernetes:%s:pod:pod-server" % (cluster_name, namespace, cluster_name))
+        assert _relation_data(
+            json_data=json_data,
+            type_name="exposes",
+            external_id_assert_fn=lambda eid:  pod_service_match.findall(eid)
+        ).startswith("urn:/kubernetes:%s:service:%s:pod-service" % (cluster_name, namespace))
     util.wait_until(wait_for_components, 120, 3)
