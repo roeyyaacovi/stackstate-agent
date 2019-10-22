@@ -3,7 +3,7 @@
   "TRACE_AGENT_VERSION": "6.7.11",
   "TRACE_AGENT_BRANCH": "6.7.11",
   "TRACE_AGENT_WINDOWS_BINARY": "yes",
-  "PROCESS_AGENT_VERSION": "config-fallback",
+  "PROCESS_AGENT_VERSION": "process-agent-amd64-2.0.5-dd0c23a",
   "PROCESS_AGENT_BRANCH": "config-fallback",
   "OMNIBUS_SOFTWARE_VERSION": "6.10.0",
   "OMNIBUS_RUBY_VERSION": "datadog-5.5.0",
