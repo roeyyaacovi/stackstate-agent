@@ -25,6 +25,12 @@
     - name: Add Docker GPG APT key
       become: true
       apt_key: url=https://download.docker.com/linux/ubuntu/gpg
+    - name: Set authorized key taken from file
+      authorized_key:
+        user: ubuntu
+        state: present
+        key: "{{ lookup('file', '~/.ssh/id_rsa.pub') }}"
+      ignore_errors: true
     - name: Add Docker APT repository
       become: true
       apt_repository:
