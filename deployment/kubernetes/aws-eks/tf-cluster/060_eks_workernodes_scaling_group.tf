@@ -86,6 +86,7 @@ resource "aws_autoscaling_group" "eks-autoscaling-group" {
     propagate_at_launch = true
   }
 }
+//You can specify a recurrence schedule, in UTC, using the Unix cron syntax format
 resource "aws_autoscaling_schedule" "scale-down" {
   scheduled_action_name = "scale-down"
   min_size = 0
