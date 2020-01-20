@@ -53,6 +53,13 @@ services:
       KAFKA_BROKERS: kafka:9092
       ZOOKEEPER_QUORUM: kafka
     mem_limit: 1G
+
+  simulator:
+    image: "quay.io/stackstate/simulator:${STACKSTATE_BRANCH}"
+    ports:
+      - 7078:7078
+    command: "-v record -t recording-`date '+%m%d%H%M'`.template.json -u http://receiver:7077"   
+
   nginx:
     image: nginx:1.14.2
     ports:
