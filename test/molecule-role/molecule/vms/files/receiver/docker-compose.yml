@@ -58,7 +58,7 @@ services:
     image: "quay.io/stackstate/simulator:stac-7282-simulator-receiver"
     ports:
       - 7078:7078
-    command: "-v record -t recording-${RECORDING_NAME}.template.json -u http://receiver:7077/"   
+    command: "-v record -t recording-${RECORDING_NAME}.template.json -u http://receiver:7077/"
     # volumes:
     #   - ./:/simulator/bin:rw
   nginx:
