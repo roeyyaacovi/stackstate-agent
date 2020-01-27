@@ -55,11 +55,12 @@ services:
     mem_limit: 1G
 
   simulator:
-    image: "quay.io/stackstate/simulator:${STACKSTATE_BRANCH}"
+    image: "quay.io/stackstate/simulator:stac-7282-simulator-receiver"
     ports:
       - 7078:7078
-    command: "-v record -t recording-`date '+%m%d%H%M'`.template.json -u http://receiver:7077"   
-
+    command: "-v record -t recording-${RECORDING_NAME}.template.json -u http://receiver:7077/"   
+    # volumes:
+    #   - ./:/simulator/bin:rw
   nginx:
     image: nginx:1.14.2
     ports:
