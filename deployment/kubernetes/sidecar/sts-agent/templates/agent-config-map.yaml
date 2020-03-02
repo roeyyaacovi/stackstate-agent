@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: sts-agent-config
+  namespace: default
+data:
+  {{- toYaml .Values.agent_config_map | nindent 2 }}

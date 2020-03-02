@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: authors-app
+  labels:
+    {{- include "trace-java-demo.labels-authorsapp" . | nindent 4 }}
+
+spec:
+  type: ClusterIP
+  ports:
+    - port: 8081
+      name: books-app
+  selector:
+    {{- include "trace-java-demo.selectorLabels-authorsapp" . | nindent 4 }}

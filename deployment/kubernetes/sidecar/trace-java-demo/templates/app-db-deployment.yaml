@@ -1,0 +1,51 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "trace-java-demo.fullname" . }}-db
+  labels:
+  {{- include "trace-java-demo.labels-db" . | nindent 4 }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      {{- include "trace-java-demo.selectorLabels-db" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "trace-java-demo.selectorLabels-db" . | nindent 8 }}
+    spec:
+      serviceAccountName: {{ include "trace-java-demo.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: db
+          image: quay.io/stackstate/trace-java-demo:db-master
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          env:
+            - name: POSTGRES_USER
+              value: 'app'
+            - name: POSTGRES_PASSWORD
+              value: 'app'
+            - name: POSTGRES_DB
+              value: 'app'
+          ports:
+            - containerPort: 5432
+              name: db
+              protocol: TCP
+      hostPID: true
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+      {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+      {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+      {{- toYaml . | nindent 8 }}
+      {{- end }}

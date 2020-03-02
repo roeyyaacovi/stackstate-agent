@@ -1,0 +1,55 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "trace-java-demo.fullname" . }}-booksapp
+  labels:
+  {{- include "trace-java-demo.labels-booksapp" . | nindent 4 }}
+spec:
+  selector:
+    matchLabels:
+  {{- include "trace-java-demo.selectorLabels-booksapp" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+    {{- include "trace-java-demo.selectorLabels-booksapp" . | nindent 8 }}
+    spec:
+      containers:
+        - name: books-app
+          image: quay.io/stackstate/trace-java-demo:books-app-master
+{{/*          command: ["tail","-f","/dev/null"]*/}}
+          ports:
+            - containerPort: 8081
+              name: books-app
+              protocol: TCP
+          env:
+            - name: MAVEN_OPTS
+              value: "-Dkubernetes.service.name=authors-app -Dkubernetes.service.port=8081 -Dsts.service.name=stackstate-demo-cluster:books-app -Dsts.agent.host=localhost -Dsts.agent.port=8126 -Dstackstate.slf4j.simpleLogger.defaultLogLevel=debug -javaagent:/sts-java-agent.jar"
+        - name: traceagent-sidecar
+          securityContext:
+          {{- toYaml .Values.securityContext | nindent 12 }}
+          envFrom:
+            - configMapRef:
+                name: {{ include "trace-java-demo.fullname" . }}-tracemap
+          image: "{{ .Values.traceagent_image }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: 8126
+              protocol: TCP
+      hostPID: true
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+      {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+      {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+      {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+      {{- toYaml . | nindent 8 }}
+  {{- end }}

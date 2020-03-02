@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: sts-traceagent-config
+  namespace: default
+data:
+  {{- toYaml .Values.trace_agent_config_map | nindent 2 }}
