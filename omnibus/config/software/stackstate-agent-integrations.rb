@@ -88,6 +88,8 @@ build do
       pip_args = "install --require-hashes -r #{project_dir}/check_requirements.txt"
       command "#{windows_safe_path(install_dir)}\\embedded\\scripts\\pip.exe #{pip_args}"
     else
+      pip "install pip==20.0.2", :env => nix_build_env
+      pip "install setuptools==44.0.0", :env => nix_build_env
       pip "install --require-hashes -r #{project_dir}/check_requirements.txt", :env => nix_build_env
     end
 
