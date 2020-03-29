@@ -89,7 +89,6 @@ build do
       command "#{windows_safe_path(install_dir)}\\embedded\\scripts\\pip.exe #{pip_args}"
     else
       pip "install pip==20.0.2", :env => nix_build_env
-      pip "install git+https://github.com/vmware/vsphere-automation-sdk-python.git", :env => nix_build_env
       pip "install --require-hashes -r #{project_dir}/check_requirements.txt", :env => nix_build_env
     end
 
@@ -154,7 +153,7 @@ build do
       command("#{python_bin} -m piptools compile --generate-hashes --output-file #{windows_safe_path(install_dir)}\\#{agent_requirements_file} #{static_reqs_filtered_file}")
     else
       pip "install -c #{project_dir}/#{core_constraints_file} --no-deps .", :env => nix_build_env, :cwd => "#{project_dir}/stackstate_checks_base"
-      command("#{install_dir}/embedded/bin/python -m piptools compile --generate-hashes --output-file #{install_dir}/#{agent_requirements_file} #{static_reqs_filtered_file}")
+      command("#{install_dir}/embedded/bin/python -m piptools compile --generate-hashes -e --output-file #{install_dir}/#{agent_requirements_file} #{static_reqs_filtered_file}")
     end
 
     # Uninstall the deps that pip-compile installs so we don't include them in the final artifact
@@ -173,7 +172,7 @@ build do
     if windows?
       command("#{python_bin} -m #{python_pip_req} #{windows_safe_path(install_dir)}\\#{agent_requirements_file}")
     else
-      pip "install -c #{project_dir}/#{core_constraints_file} --require-hashes --no-deps -r #{install_dir}/#{agent_requirements_file}", :env => nix_build_env
+      pip "install -e -c #{project_dir}/#{core_constraints_file} --require-hashes --no-deps -r #{install_dir}/#{agent_requirements_file}", :env => nix_build_env
     end
     # Create a constraint file after installing all the core dependencies and before any integration
     # This is then used as a constraint file by the integration command to avoid messing with the agent's python environment
