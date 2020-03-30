@@ -172,7 +172,7 @@ build do
     if windows?
       command("#{python_bin} -m #{python_pip_req} #{windows_safe_path(install_dir)}\\#{agent_requirements_file}")
     else
-      pip "install -e -c #{project_dir}/#{core_constraints_file} --require-hashes --no-deps -r #{install_dir}/#{agent_requirements_file}", :env => nix_build_env
+      pip "install -c #{project_dir}/#{core_constraints_file} --require-hashes --no-deps -r #{install_dir}/#{agent_requirements_file}", :env => nix_build_env
     end
     # Create a constraint file after installing all the core dependencies and before any integration
     # This is then used as a constraint file by the integration command to avoid messing with the agent's python environment
