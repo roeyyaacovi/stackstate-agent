@@ -2,6 +2,7 @@ package agent
 
 import (
 	"context"
+	"github.com/StackVista/stackstate-agent/pkg/trace/interpreter"
 	"sync/atomic"
 	"time"
 
@@ -40,6 +41,7 @@ type Agent struct {
 	StatsWriter        *writer.StatsWriter
 	ServiceExtractor   *TraceServiceExtractor
 	ServiceMapper      *ServiceMapper
+	SpanInterpreterEngine *interpreter.SpanInterpreterEngine
 
 	// obfuscator is used to obfuscate sensitive data from various span
 	// tags based on their type.
@@ -85,6 +87,7 @@ func NewAgent(ctx context.Context, conf *config.AgentConfig) *Agent {
 	tw := writer.NewTraceWriter(conf, tracePkgChan)
 	sw := writer.NewStatsWriter(conf, statsChan)
 	svcW := writer.NewServiceWriter(conf, filteredServiceChan)
+	sie := interpreter.NewSpanIntepreterEngine(conf)
 
 	return &Agent{
 		Receiver:           r,
@@ -100,6 +103,7 @@ func NewAgent(ctx context.Context, conf *config.AgentConfig) *Agent {
 		ServiceWriter:      svcW,
 		ServiceExtractor:   se,
 		ServiceMapper:      sm,
+		SpanInterpreterEngine: sie,
 		obfuscator:         obf,
 		tracePkgChan:       tracePkgChan,
 		conf:               conf,
@@ -201,6 +205,7 @@ func (a *Agent) Process(t pb.Trace) {
 	for _, span := range t {
 		a.obfuscator.Obfuscate(span)
 		Truncate(span)
+		a.SpanInterpreterEngine.Interpret(span)
 	}
 	a.Replacer.Replace(&t)
 

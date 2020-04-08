@@ -6,10 +6,11 @@ type SQLSpanInterpreter struct {
 	interpreter
 }
 
+const SQL_SPAN_INTERPRETER = "sql"
+
 func MakeSQLSpanInterpreter(config *Config) *SQLSpanInterpreter {
 	return &SQLSpanInterpreter{interpreter{Config: config}}
 }
-
 
 func (in *SQLSpanInterpreter) interpret(span *pb.Span) *pb.Span {
 	dbType := "database"

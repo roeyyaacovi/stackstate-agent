@@ -6,6 +6,8 @@ type ProcessSpanInterpreter struct {
 	interpreter
 }
 
+const PROCESS_SPAN_INTERPRETER = "process"
+
 func MakeProcessSpanInterpreter(config *Config) *ProcessSpanInterpreter {
 	return &ProcessSpanInterpreter{interpreter{Config: config}}
 }

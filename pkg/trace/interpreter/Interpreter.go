@@ -8,7 +8,6 @@ import (
 
 const SERVICE_TYPE_NAME = "service"
 const PROCESS_TYPE_NAME = "process"
-const DEFAULT_SPAN_TYPE = "unknown"
 
 type Interpreter interface {
 	interpret(span *pb.Span) *pb.Span
