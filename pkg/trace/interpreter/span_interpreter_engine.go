@@ -1,8 +1,8 @@
 package interpreter
 
 import (
-	agentConfig "github.com/StackVista/stackstate-agent/pkg/trace/config"
-	"github.com/StackVista/stackstate-agent/pkg/trace/interpreter/config"
+	"github.com/StackVista/stackstate-agent/pkg/trace/config"
+	interpreterConfig "github.com/StackVista/stackstate-agent/pkg/trace/interpreter/config"
 	"github.com/StackVista/stackstate-agent/pkg/trace/interpreter/interpreters"
 	"github.com/StackVista/stackstate-agent/pkg/trace/pb"
 )
@@ -13,7 +13,7 @@ type SpanInterpreterEngine struct {
 	Interpreters           map[string]interpreters.Interpreter
 }
 
-func MakeSpanIntepreterEngine(config *config.Config, ins map[string]interpreters.Interpreter) *SpanInterpreterEngine {
+func MakeSpanIntepreterEngine(config *interpreterConfig.Config, ins map[string]interpreters.Interpreter) *SpanInterpreterEngine {
 	return &SpanInterpreterEngine{
 		SpanInterpreterEngineContext: MakeSpanInterpreterEngineContext(config),
 		DefaultSpanInterpreter:       interpreters.MakeDefaultSpanInterpreter(config),
@@ -21,7 +21,7 @@ func MakeSpanIntepreterEngine(config *config.Config, ins map[string]interpreters
 	}
 }
 
-func NewSpanIntepreterEngine(agentConfig *agentConfig.AgentConfig) *SpanInterpreterEngine {
+func NewSpanIntepreterEngine(agentConfig *config.AgentConfig) *SpanInterpreterEngine {
 	interpreterConfig := agentConfig.InterpreterConfig
 	ins := make(map[string]interpreters.Interpreter, 0)
 	ins[interpreters.PROCESS_SPAN_INTERPRETER] = interpreters.MakeProcessSpanInterpreter(interpreterConfig)

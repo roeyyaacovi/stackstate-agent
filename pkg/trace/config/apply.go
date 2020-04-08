@@ -4,7 +4,7 @@ import (
 	"encoding/csv"
 	"errors"
 	"fmt"
-	config2 "github.com/StackVista/stackstate-agent/pkg/trace/interpreter/config"
+	interpreterconfig "github.com/StackVista/stackstate-agent/pkg/trace/interpreter/config"
 	"net/url"
 	"regexp"
 	"strings"
@@ -343,9 +343,9 @@ func (c *AgentConfig) addReplaceRule(tag, pattern, repl string) {
 	})
 }
 
-func readInterpreterConfigYaml() *config2.Config {
-	ini := config2.Config{}
-	conf := config2.DefaultInterpreterConfig()
+func readInterpreterConfigYaml() *interpreterconfig.Config {
+	ini := interpreterconfig.Config{}
+	conf := interpreterconfig.DefaultInterpreterConfig()
 
 	err := config.Datadog.UnmarshalKey("apm_config.span_interpreter", &ini)
 	if err == nil {
