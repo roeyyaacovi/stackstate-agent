@@ -3,6 +3,7 @@ package config
 import (
 	"bytes"
 	"errors"
+	"github.com/StackVista/stackstate-agent/pkg/trace/interpreter"
 	"net/url"
 	"os"
 	"os/exec"
@@ -110,6 +111,9 @@ type AgentConfig struct {
 
 	// Obfuscation holds sensitive data obufscator's configuration.
 	Obfuscation *ObfuscationConfig
+
+	// InterpreterConfig contains span interpreter config.
+	InterpreterConfig *interpreter.Config
 }
 
 // New returns a configuration with the default values.
@@ -149,6 +153,8 @@ func New() *AgentConfig {
 		Ignore:                      make(map[string][]string),
 		AnalyzedRateByServiceLegacy: make(map[string]float64),
 		AnalyzedSpansByService:      make(map[string]map[string]float64),
+
+		InterpreterConfig: interpreter.DefaultInterpreterConfig(),
 	}
 }
 

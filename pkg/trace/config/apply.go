@@ -4,6 +4,7 @@ import (
 	"encoding/csv"
 	"errors"
 	"fmt"
+	"github.com/StackVista/stackstate-agent/pkg/trace/interpreter"
 	"net/url"
 	"regexp"
 	"strings"
@@ -235,6 +236,8 @@ func (c *AgentConfig) applyDatadogConfig() error {
 		}
 	}
 
+	c.InterpreterConfig = readInterpreterConfigYaml()
+
 	// undocumented
 	if config.Datadog.IsSet("apm_config.max_cpu_percent") {
 		c.MaxCPU = config.Datadog.GetFloat64("apm_config.max_cpu_percent") / 100
@@ -338,6 +341,36 @@ func (c *AgentConfig) addReplaceRule(tag, pattern, repl string) {
 		Re:      re,
 		Repl:    repl,
 	})
+}
+
+func readInterpreterConfigYaml() *interpreter.Config {
+	ini := interpreter.Config{}
+	conf := interpreter.DefaultInterpreterConfig()
+
+	err := config.Datadog.UnmarshalKey("apm_config.span_interpreter", &ini)
+	if err == nil {
+		if ini.ServiceIdentifiers != nil {
+			conf.ServiceIdentifiers = ini.ServiceIdentifiers
+		}
+
+		if ini.ExtractionFields.CreateTimeField != "" {
+			conf.ExtractionFields.CreateTimeField = ini.ExtractionFields.CreateTimeField
+		}
+
+		if ini.ExtractionFields.HostnameField != "" {
+			conf.ExtractionFields.HostnameField = ini.ExtractionFields.HostnameField
+		}
+
+		if ini.ExtractionFields.KindField != "" {
+			conf.ExtractionFields.KindField = ini.ExtractionFields.KindField
+		}
+
+		if ini.ExtractionFields.PidField != "" {
+			conf.ExtractionFields.PidField = ini.ExtractionFields.PidField
+		}
+	}
+
+	return conf
 }
 
 func readServiceWriterConfigYaml() writerconfig.ServiceWriterConfig {
