@@ -2,6 +2,8 @@ package interpreter
 
 import (
 	"fmt"
+	"github.com/StackVista/stackstate-agent/pkg/trace/interpreter/config"
+	"github.com/StackVista/stackstate-agent/pkg/trace/interpreter/util"
 	"github.com/StackVista/stackstate-agent/pkg/trace/pb"
 	"github.com/pkg/errors"
 	"strconv"
@@ -10,14 +12,14 @@ import (
 
 type SpanInterpreterEngineContext interface {
 	nanosToMillis(nanos int64) int64
-	extractSpanMetadata(span *pb.Span) (*SpanMetadata, error)
+	extractSpanMetadata(span *pb.Span) (*util.SpanMetadata, error)
 }
 
 type spanInterpreterEngineContext struct {
-	Config *Config
+	Config *config.Config
 }
 
-func MakeSpanInterpreterEngineContext(config *Config) SpanInterpreterEngineContext {
+func MakeSpanInterpreterEngineContext(config *config.Config) SpanInterpreterEngineContext {
 	return &spanInterpreterEngineContext{Config: config}
 }
 
@@ -25,8 +27,7 @@ func (c *spanInterpreterEngineContext) nanosToMillis(nanos int64) int64 {
 	return nanos / int64(time.Millisecond)
 }
 
-
-func (c *spanInterpreterEngineContext) extractSpanMetadata(span *pb.Span) (*SpanMetadata, error) {
+func (c *spanInterpreterEngineContext) extractSpanMetadata(span *pb.Span) (*util.SpanMetadata, error) {
 
 	var hostname string
 	var createTime int64
@@ -52,7 +53,7 @@ func (c *spanInterpreterEngineContext) extractSpanMetadata(span *pb.Span) (*Span
 		return nil, createSpanMetadataError(c.Config.ExtractionFields.KindField)
 	}
 
-		// try to get the create time, otherwise default to span start
+	// try to get the create time, otherwise default to span start
 	if createTimeStr, found := span.Meta[c.Config.ExtractionFields.CreateTimeField]; found {
 		ct, err := strconv.ParseInt(createTimeStr, 10, 64)
 		if err != nil {
@@ -63,12 +64,12 @@ func (c *spanInterpreterEngineContext) extractSpanMetadata(span *pb.Span) (*Span
 		createTime = c.nanosToMillis(span.Start)
 	}
 
-	return &SpanMetadata{
+	return &util.SpanMetadata{
 		CreateTime: createTime,
-		Hostname: hostname,
-		PID: pid,
-		Type: span.Type,
-		Kind: kind,
+		Hostname:   hostname,
+		PID:        pid,
+		Type:       span.Type,
+		Kind:       kind,
 	}, nil
 }
 

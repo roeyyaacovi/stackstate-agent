@@ -1,4 +1,4 @@
-package interpreter
+package config
 
 // InterpreterConfig holds the configuration that allows the span interpreter
 // to interpret and enrich various span types.
@@ -9,9 +9,9 @@ type Config struct {
 
 type ExtractionFields struct {
 	CreateTimeField string `mapstructure:"create_time"`
-	HostnameField string `mapstructure:"host_name"`
-	PidField string `mapstructure:"pid"`
-	KindField string `mapstructure:"kind"`
+	HostnameField   string `mapstructure:"host_name"`
+	PidField        string `mapstructure:"pid"`
+	KindField       string `mapstructure:"kind"`
 }
 
 func DefaultInterpreterConfig() *Config {
@@ -19,9 +19,9 @@ func DefaultInterpreterConfig() *Config {
 		ServiceIdentifiers: []string{"db.instance"},
 		ExtractionFields: ExtractionFields{
 			CreateTimeField: "span.starttime",
-			HostnameField: "span.hostname",
-			PidField: "span.pid",
-			KindField: "span.kind",
+			HostnameField:   "span.hostname",
+			PidField:        "span.pid",
+			KindField:       "span.kind",
 		},
 	}
 }

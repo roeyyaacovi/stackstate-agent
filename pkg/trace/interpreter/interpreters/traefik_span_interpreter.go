@@ -1,6 +1,7 @@
-package interpreter
+package interpreters
 
 import (
+	"github.com/StackVista/stackstate-agent/pkg/trace/interpreter/config"
 	"github.com/StackVista/stackstate-agent/pkg/trace/pb"
 	"strings"
 )
@@ -11,11 +12,11 @@ type TraefikInterpreter struct {
 
 const TRAEFIK_SPAN_INTERPRETER = "traefik"
 
-func MakeTraefikInterpreter(config *Config) *TraefikInterpreter {
+func MakeTraefikInterpreter(config *config.Config) *TraefikInterpreter {
 	return &TraefikInterpreter{interpreter{Config: config}}
 }
 
-func (in *TraefikInterpreter) interpret(span *pb.Span) *pb.Span {
+func (in *TraefikInterpreter) Interpret(span *pb.Span) *pb.Span {
 	if kind, found := span.Meta["span.kind"]; found {
 		switch kind {
 		case "server":
