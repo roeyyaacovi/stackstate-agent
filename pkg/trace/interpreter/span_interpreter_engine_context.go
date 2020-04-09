@@ -10,6 +10,7 @@ import (
 	"time"
 )
 
+// SpanInterpreterEngineContext helper functions that is used by the span interpreter engine context
 type SpanInterpreterEngineContext interface {
 	nanosToMillis(nanos int64) int64
 	extractSpanMetadata(span *pb.Span) (*util.SpanMetadata, error)
@@ -19,6 +20,7 @@ type spanInterpreterEngineContext struct {
 	Config *config.Config
 }
 
+// MakeSpanInterpreterEngineContext creates a SpanInterpreterEngineContext for config
 func MakeSpanInterpreterEngineContext(config *config.Config) SpanInterpreterEngineContext {
 	return &spanInterpreterEngineContext{Config: config}
 }

@@ -7,6 +7,7 @@ import (
 	"github.com/StackVista/stackstate-agent/pkg/trace/pb"
 )
 
+// SpanInterpreterEngine type is used to setup the span interpreters
 type SpanInterpreterEngine struct {
 	SpanInterpreterEngineContext
 	DefaultSpanInterpreter *interpreters.DefaultSpanInterpreter
@@ -26,14 +27,14 @@ func MakeSpanInterpreterEngine(config *interpreterConfig.Config, ins map[string]
 func NewSpanInterpreterEngine(agentConfig *config.AgentConfig) *SpanInterpreterEngine {
 	interpreterConfig := agentConfig.InterpreterConfig
 	ins := make(map[string]interpreters.Interpreter, 0)
-	ins[interpreters.PROCESS_SPAN_INTERPRETER] = interpreters.MakeProcessSpanInterpreter(interpreterConfig)
-	ins[interpreters.SQL_SPAN_INTERPRETER] = interpreters.MakeSQLSpanInterpreter(interpreterConfig)
-	ins[interpreters.TRAEFIK_SPAN_INTERPRETER] = interpreters.MakeTraefikInterpreter(interpreterConfig)
+	ins[interpreters.ProcessSpanInterpreterName] = interpreters.MakeProcessSpanInterpreter(interpreterConfig)
+	ins[interpreters.SQLSpanInterpreterName] = interpreters.MakeSQLSpanInterpreter(interpreterConfig)
+	ins[interpreters.TraefikSpanInterpreterSpan] = interpreters.MakeTraefikInterpreter(interpreterConfig)
 
 	return MakeSpanInterpreterEngine(interpreterConfig, ins)
 }
 
-// Interprets spans using the configured SpanInterpreterEngine
+// Interpret interprets spans using the configured SpanInterpreterEngine
 func (se *SpanInterpreterEngine) Interpret(span *pb.Span) *pb.Span {
 	span = se.DefaultSpanInterpreter.Interpret(span)
 

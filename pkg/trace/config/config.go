@@ -3,7 +3,7 @@ package config
 import (
 	"bytes"
 	"errors"
-	config2 "github.com/StackVista/stackstate-agent/pkg/trace/interpreter/config"
+	interpreterconfig "github.com/StackVista/stackstate-agent/pkg/trace/interpreter/config"
 	"net/url"
 	"os"
 	"os/exec"
@@ -113,7 +113,7 @@ type AgentConfig struct {
 	Obfuscation *ObfuscationConfig
 
 	// InterpreterConfig contains span interpreter config.
-	InterpreterConfig *config2.Config
+	InterpreterConfig *interpreterconfig.Config
 }
 
 // New returns a configuration with the default values.
@@ -154,7 +154,7 @@ func New() *AgentConfig {
 		AnalyzedRateByServiceLegacy: make(map[string]float64),
 		AnalyzedSpansByService:      make(map[string]map[string]float64),
 
-		InterpreterConfig: config2.DefaultInterpreterConfig(),
+		InterpreterConfig: interpreterconfig.DefaultInterpreterConfig(),
 	}
 }
 

@@ -6,17 +6,27 @@ import (
 	"strings"
 )
 
+// TraefikInterpreter sets up the default span interpreter
 type TraefikInterpreter struct {
 	interpreter
 }
 
-const TRAEFIK_SPAN_INTERPRETER = "traefik"
+// TraefikSpanInterpreterSpan is the name used for matching this interpreter
+const TraefikSpanInterpreterSpan = "traefik"
 
+// MakeTraefikInterpreter creates an instance of the traefik span interpreter
 func MakeTraefikInterpreter(config *config.Config) *TraefikInterpreter {
 	return &TraefikInterpreter{interpreter{Config: config}}
 }
 
+// Interpret performs the interpretation for the TraefikInterpreter
 func (in *TraefikInterpreter) Interpret(span *pb.Span) *pb.Span {
+
+	// no meta, add a empty map
+	if span.Meta == nil {
+		span.Meta = map[string]string{}
+	}
+
 	if kind, found := span.Meta["span.kind"]; found {
 		switch kind {
 		case "server":
