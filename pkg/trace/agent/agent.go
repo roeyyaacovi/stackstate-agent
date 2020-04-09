@@ -87,7 +87,7 @@ func NewAgent(ctx context.Context, conf *config.AgentConfig) *Agent {
 	tw := writer.NewTraceWriter(conf, tracePkgChan)
 	sw := writer.NewStatsWriter(conf, statsChan)
 	svcW := writer.NewServiceWriter(conf, filteredServiceChan)
-	sie := interpreter.NewSpanIntepreterEngine(conf)
+	sie := interpreter.NewSpanInterpreterEngine(conf)
 
 	return &Agent{
 		Receiver:           r,

@@ -13,7 +13,8 @@ type SpanInterpreterEngine struct {
 	Interpreters           map[string]interpreters.Interpreter
 }
 
-func MakeSpanIntepreterEngine(config *interpreterConfig.Config, ins map[string]interpreters.Interpreter) *SpanInterpreterEngine {
+// MakeSpanInterpreterEngine creates a SpanInterpreterEngine given the config and interpreters
+func MakeSpanInterpreterEngine(config *interpreterConfig.Config, ins map[string]interpreters.Interpreter) *SpanInterpreterEngine {
 	return &SpanInterpreterEngine{
 		SpanInterpreterEngineContext: MakeSpanInterpreterEngineContext(config),
 		DefaultSpanInterpreter:       interpreters.MakeDefaultSpanInterpreter(config),
@@ -21,16 +22,18 @@ func MakeSpanIntepreterEngine(config *interpreterConfig.Config, ins map[string]i
 	}
 }
 
-func NewSpanIntepreterEngine(agentConfig *config.AgentConfig) *SpanInterpreterEngine {
+// NewSpanInterpreterEngine creates a SpanInterpreterEngine given the config and the default interpreters
+func NewSpanInterpreterEngine(agentConfig *config.AgentConfig) *SpanInterpreterEngine {
 	interpreterConfig := agentConfig.InterpreterConfig
 	ins := make(map[string]interpreters.Interpreter, 0)
 	ins[interpreters.PROCESS_SPAN_INTERPRETER] = interpreters.MakeProcessSpanInterpreter(interpreterConfig)
 	ins[interpreters.SQL_SPAN_INTERPRETER] = interpreters.MakeSQLSpanInterpreter(interpreterConfig)
 	ins[interpreters.TRAEFIK_SPAN_INTERPRETER] = interpreters.MakeTraefikInterpreter(interpreterConfig)
 
-	return MakeSpanIntepreterEngine(interpreterConfig, ins)
+	return MakeSpanInterpreterEngine(interpreterConfig, ins)
 }
 
+// Interprets spans using the configured SpanInterpreterEngine
 func (se *SpanInterpreterEngine) Interpret(span *pb.Span) *pb.Span {
 	span = se.DefaultSpanInterpreter.Interpret(span)
 
