@@ -23,7 +23,7 @@ func (in *DefaultSpanInterpreter) Interpret(span *pb.Span) *pb.Span {
 	return span
 }
 
-// Calculates a Service Name for this span given the interpreter config
+// ServiceName calculates a Service Name for this span given the interpreter config
 func (in *DefaultSpanInterpreter) ServiceName(span *pb.Span) string {
 	serviceNameSet := make([]string, 0)
 	for _, identifier := range in.Config.ServiceIdentifiers {
