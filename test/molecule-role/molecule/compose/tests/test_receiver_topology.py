@@ -50,12 +50,12 @@ def test_java_traces(host):
             {
                 "type": "service",
                 "external_id": lambda e_id: e_id == "urn:service:/traefik:stackstate-authors-app.docker.localhost",
-                "data": lambda d: d["name"] == "stackstate-authors-app" and "urn:service:/stackstate-authors-app" in d["identifiers"] and d["service"] == "stackstate-authors-app"
+                "data": lambda d: d["name"] == "stackstate-authors-app.docker.localhost" and "urn:service:/stackstate-authors-app.docker.localhost" in d["identifiers"] and d["service"] == "stackstate-authors-app.docker.localhost"
             },
             {
                 "type": "service",
                 "external_id": lambda e_id: e_id == "urn:service:/traefik:stackstate-books-app.docker.localhost",
-                "data": lambda d: d["name"] == "stackstate-books-app" and "urn:service:/stackstate-books-app" in d["identifiers"] and d["service"] == "stackstate-books-app"
+                "data": lambda d: d["name"] == "stackstate-books-app.docker.localhost" and "urn:service:/stackstate-books-app.docker.localhost" in d["identifiers"] and d["service"] == "stackstate-books-app.docker.localhost"
             },
             {
                 "type": "service",

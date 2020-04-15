@@ -11,9 +11,9 @@ import (
 )
 
 const createTimeField = "span.starttime"
-const hostnameField   = "span.hostname"
-const pidField        = "span.pid"
-const kindField       = "span.kind"
+const hostnameField = "span.hostname"
+const pidField = "span.pid"
+const kindField = "span.kind"
 
 // SpanInterpreterEngineContext helper functions that is used by the span interpreter engine context
 type SpanInterpreterEngineContext interface {
