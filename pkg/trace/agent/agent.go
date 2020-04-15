@@ -119,6 +119,11 @@ func (a *Agent) Run() {
 	// itself too fast (nightmare loop)
 	watchdogTicker := time.NewTicker(a.conf.WatchdogInterval)
 	defer watchdogTicker.Stop()
+	////
+	//featuresTicker := time.NewTicker(5 * time.Second)
+	//
+	//// Channel to announce new features detected
+	//featuresCh := make(chan features.Features, 1)
 
 	// update the data served by expvar so that we don't expose a 0 sample rate
 	info.UpdatePreSampler(*a.Receiver.PreSampler.Stats())
