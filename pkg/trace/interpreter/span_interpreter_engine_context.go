@@ -10,6 +10,11 @@ import (
 	"time"
 )
 
+const createTimeField = "span.starttime"
+const hostnameField   = "span.hostname"
+const pidField        = "span.pid"
+const kindField       = "span.kind"
+
 // SpanInterpreterEngineContext helper functions that is used by the span interpreter engine context
 type SpanInterpreterEngineContext interface {
 	nanosToMillis(nanos int64) int64
@@ -37,26 +42,26 @@ func (c *spanInterpreterEngineContext) extractSpanMetadata(span *pb.Span) (*util
 	var kind string
 	var found bool
 
-	if hostname, found = span.Meta[c.Config.ExtractionFields.HostnameField]; !found {
-		return nil, createSpanMetadataError(c.Config.ExtractionFields.HostnameField)
+	if hostname, found = span.Meta[hostnameField]; !found {
+		return nil, createSpanMetadataError(hostnameField)
 	}
 
-	if pidStr, found := span.Meta[c.Config.ExtractionFields.PidField]; found {
+	if pidStr, found := span.Meta[pidField]; found {
 		p, err := strconv.Atoi(pidStr)
 		if err != nil {
 			return nil, err
 		}
 		pid = p
 	} else {
-		return nil, createSpanMetadataError(c.Config.ExtractionFields.PidField)
+		return nil, createSpanMetadataError(pidField)
 	}
 
-	if kind, found = span.Meta[c.Config.ExtractionFields.KindField]; !found {
-		return nil, createSpanMetadataError(c.Config.ExtractionFields.KindField)
+	if kind, found = span.Meta[kindField]; !found {
+		return nil, createSpanMetadataError(kindField)
 	}
 
 	// try to get the create time, otherwise default to span start
-	if createTimeStr, found := span.Meta[c.Config.ExtractionFields.CreateTimeField]; found {
+	if createTimeStr, found := span.Meta[createTimeField]; found {
 		ct, err := strconv.ParseInt(createTimeStr, 10, 64)
 		if err != nil {
 			return nil, err

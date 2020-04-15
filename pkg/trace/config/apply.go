@@ -352,22 +352,6 @@ func readInterpreterConfigYaml() *interpreterconfig.Config {
 		if ini.ServiceIdentifiers != nil {
 			conf.ServiceIdentifiers = ini.ServiceIdentifiers
 		}
-
-		if ini.ExtractionFields.CreateTimeField != "" {
-			conf.ExtractionFields.CreateTimeField = ini.ExtractionFields.CreateTimeField
-		}
-
-		if ini.ExtractionFields.HostnameField != "" {
-			conf.ExtractionFields.HostnameField = ini.ExtractionFields.HostnameField
-		}
-
-		if ini.ExtractionFields.KindField != "" {
-			conf.ExtractionFields.KindField = ini.ExtractionFields.KindField
-		}
-
-		if ini.ExtractionFields.PidField != "" {
-			conf.ExtractionFields.PidField = ini.ExtractionFields.PidField
-		}
 	}
 
 	return conf

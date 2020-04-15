@@ -28,19 +28,19 @@ const processStatsInterval = time.Minute
 
 // Agent struct holds all the sub-routines structs and make the data flow between them
 type Agent struct {
-	Receiver           *api.HTTPReceiver
-	Concentrator       *stats.Concentrator
-	Blacklister        *filters.Blacklister
-	Replacer           *filters.Replacer
-	ScoreSampler       *Sampler
-	ErrorsScoreSampler *Sampler
-	PrioritySampler    *Sampler
-	EventProcessor     *event.Processor
-	TraceWriter        *writer.TraceWriter
-	ServiceWriter      *writer.ServiceWriter
-	StatsWriter        *writer.StatsWriter
-	ServiceExtractor   *TraceServiceExtractor
-	ServiceMapper      *ServiceMapper
+	Receiver              *api.HTTPReceiver
+	Concentrator          *stats.Concentrator
+	Blacklister           *filters.Blacklister
+	Replacer              *filters.Replacer
+	ScoreSampler          *Sampler
+	ErrorsScoreSampler    *Sampler
+	PrioritySampler       *Sampler
+	EventProcessor        *event.Processor
+	TraceWriter           *writer.TraceWriter
+	ServiceWriter         *writer.ServiceWriter
+	StatsWriter           *writer.StatsWriter
+	ServiceExtractor      *TraceServiceExtractor
+	ServiceMapper         *ServiceMapper
 	SpanInterpreterEngine *interpreter.SpanInterpreterEngine
 
 	// obfuscator is used to obfuscate sensitive data from various span
@@ -90,25 +90,25 @@ func NewAgent(ctx context.Context, conf *config.AgentConfig) *Agent {
 	sie := interpreter.NewSpanInterpreterEngine(conf)
 
 	return &Agent{
-		Receiver:           r,
-		Concentrator:       c,
-		Blacklister:        filters.NewBlacklister(conf.Ignore["resource"]),
-		Replacer:           filters.NewReplacer(conf.ReplaceTags),
-		ScoreSampler:       ss,
-		ErrorsScoreSampler: ess,
-		PrioritySampler:    ps,
-		EventProcessor:     ep,
-		TraceWriter:        tw,
-		StatsWriter:        sw,
-		ServiceWriter:      svcW,
-		ServiceExtractor:   se,
-		ServiceMapper:      sm,
+		Receiver:              r,
+		Concentrator:          c,
+		Blacklister:           filters.NewBlacklister(conf.Ignore["resource"]),
+		Replacer:              filters.NewReplacer(conf.ReplaceTags),
+		ScoreSampler:          ss,
+		ErrorsScoreSampler:    ess,
+		PrioritySampler:       ps,
+		EventProcessor:        ep,
+		TraceWriter:           tw,
+		StatsWriter:           sw,
+		ServiceWriter:         svcW,
+		ServiceExtractor:      se,
+		ServiceMapper:         sm,
 		SpanInterpreterEngine: sie,
-		obfuscator:         obf,
-		tracePkgChan:       tracePkgChan,
-		conf:               conf,
-		dynConf:            dynConf,
-		ctx:                ctx,
+		obfuscator:            obf,
+		tracePkgChan:          tracePkgChan,
+		conf:                  conf,
+		dynConf:               dynConf,
+		ctx:                   ctx,
 	}
 }
 

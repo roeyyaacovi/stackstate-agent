@@ -12,9 +12,9 @@ type SQLSpanInterpreter struct {
 
 // SQLSpanInterpreterName is the name used for matching this interpreter
 const SQLSpanInterpreterName = "sql"
+
 // DatabaseTypeName returns the default database type
 const DatabaseTypeName = "database"
-
 
 // MakeSQLSpanInterpreter creates an instance of the sql span interpreter
 func MakeSQLSpanInterpreter(config *config.Config) *SQLSpanInterpreter {

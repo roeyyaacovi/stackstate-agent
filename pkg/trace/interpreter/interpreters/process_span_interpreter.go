@@ -9,10 +9,13 @@ import (
 type ProcessSpanInterpreter struct {
 	interpreter
 }
+
 // ServiceTypeName returns the default service type
 const ServiceTypeName = "service"
+
 // ProcessSpanInterpreterName is the name used for matching this interpreter
 const ProcessSpanInterpreterName = "process"
+
 // ProcessTypeName returns the default process type
 const ProcessTypeName = "process"
 
