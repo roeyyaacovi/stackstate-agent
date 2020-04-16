@@ -23,12 +23,11 @@ type featureEndpoint struct {
 }
 
 type Features struct {
-	config *config.AgentConfig
-	endpoint *featureEndpoint
-	featureTicket *time.Ticker
+	config      *config.AgentConfig
+	endpoint    *featureEndpoint
 	featureChan chan map[string]bool
 	retries int
-	features map[string]bool
+	features    map[string]bool
 }
 
 // NewFeatures returns a Features type given the config
@@ -43,42 +42,41 @@ func NewFeatures(conf *config.AgentConfig) *Features {
 		config: conf,
 		endpoint: &featureEndpoint{
 			Endpoint: endpoint,
-			client: client,
+			client:   client,
 		},
-		featureTicket: time.NewTicker(5 * time.Second),
+		retries: conf.FeaturesConfig.MaxRetries,
 		featureChan: make(chan map[string]bool, 1),
-		retries: 5,
 	}
 }
 
 func (f *Features) Start() {
 	go func() {
 		defer watchdog.LogOnPanic()
+		defer close(f.featureChan)
 		for {
 			select {
-			case <-f.featureTicket.C:
+			case <-f.config.FeaturesConfig.FeatureRequestTicker.C:
 				f.getSupportedFeatures()
 			case featuresMap := <-f.featureChan:
 				// Set the supported features
 				f.features = featuresMap
 				// Stop polling and close this channel
-				f.featureTicket.Stop()
-				close(f.featureChan)
+				f.config.FeaturesConfig.FeatureRequestTicker.Stop()
 			}
 		}
 	}()
+
+	f.getSupportedFeatures()
 }
 
 func (f *Features) Stop() {
-	f.featureTicket.Stop()
-	close(f.featureChan)
+	//f.config.FeaturesConfig.FeatureRequestTicker.Stop()
+	//close(f.featureChan)
 }
-// timeout is the HTTP timeout for POST requests to the StackState backend
-const timeout = 10 * time.Second
 
 // getSupportedFeatures returns the features supported by the StackState API
 func (f *Features) getSupportedFeatures() {
-	f.retries = f.retries -1
+	f.retries = f.retries - 1
 	if f.retries == 0 {
 		f.featureChan <- map[string]bool{}
 	}
@@ -130,7 +128,7 @@ func (f *Features) getSupportedFeatures() {
 		featuresParsed[k] = featureValue
 	}
 
-	log.Infof("Server supports features: %s", featuresParsed)
+	log.Infof("Server supports features: %v", featuresParsed)
 	f.featureChan <- featuresParsed
 }
 
@@ -188,7 +186,7 @@ func newClient(conf *config.AgentConfig, ignoreProxy bool) *http.Client {
 		log.Infof("configuring proxy through: %s", conf.ProxyURL.String())
 		transport.Proxy = http.ProxyURL(conf.ProxyURL)
 	}
-	return &http.Client{Timeout: timeout, Transport: transport}
+	return &http.Client{Timeout: conf.FeaturesConfig.HttpRequestTimeoutSecs, Transport: transport}
 }
 
 // IsTimeout returns true if the error is due to reaching the timeout limit on the http.client

@@ -3,6 +3,7 @@ package config
 import (
 	"bytes"
 	"errors"
+	featuresconfig "github.com/StackVista/stackstate-agent/pkg/features/config"
 	interpreterconfig "github.com/StackVista/stackstate-agent/pkg/trace/interpreter/config"
 	"net/url"
 	"os"
@@ -114,6 +115,9 @@ type AgentConfig struct {
 
 	// InterpreterConfig contains span interpreter config.
 	InterpreterConfig *interpreterconfig.Config
+
+	// Features
+	FeaturesConfig featuresconfig.FeaturesConfig
 }
 
 // New returns a configuration with the default values.
@@ -155,6 +159,8 @@ func New() *AgentConfig {
 		AnalyzedSpansByService:      make(map[string]map[string]float64),
 
 		InterpreterConfig: interpreterconfig.DefaultInterpreterConfig(),
+
+		FeaturesConfig: featuresconfig.DefaultFeaturesConfig(),
 	}
 }
 
