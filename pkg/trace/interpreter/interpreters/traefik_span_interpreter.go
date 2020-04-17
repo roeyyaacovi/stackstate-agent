@@ -1,8 +1,11 @@
 package interpreters
 
 import (
+	"fmt"
 	"github.com/StackVista/stackstate-agent/pkg/trace/interpreter/config"
+	"github.com/StackVista/stackstate-agent/pkg/trace/interpreter/util"
 	"github.com/StackVista/stackstate-agent/pkg/trace/pb"
+	"net/url"
 	"strings"
 )
 
@@ -44,10 +47,24 @@ func (in *TraefikInterpreter) Interpret(span *pb.Span) *pb.Span {
 				span.Name = backendName
 				span.Service = backendName
 			}
+
+			// create the service identifier using the already interpreted name and the meta "http.url"
+			if urlString, found := span.Meta["http.url"]; found {
+				url, err := url.Parse(urlString)
+				if err == nil {
+					span.Meta["span.serviceInstanceIdentifier"] = createTraefikServiceInstanceURN(span.Name, url.Host)
+				}
+			}
+
 		}
 	}
 
 	span.Meta["span.serviceType"] = "traefik"
 
 	return span
+}
+
+// createTraefikServiceInstanceURN creates the urn identifier for all service instance components
+func createTraefikServiceInstanceURN(serviceName string, hostname string) string {
+	return fmt.Sprintf("urn:%s:/%s:/%s", util.ServiceInstanceTypeName, serviceName, hostname)
 }

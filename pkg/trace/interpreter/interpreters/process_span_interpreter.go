@@ -2,6 +2,7 @@ package interpreters
 
 import (
 	"github.com/StackVista/stackstate-agent/pkg/trace/interpreter/config"
+	"github.com/StackVista/stackstate-agent/pkg/trace/interpreter/util"
 	"github.com/StackVista/stackstate-agent/pkg/trace/pb"
 )
 
@@ -9,9 +10,6 @@ import (
 type ProcessSpanInterpreter struct {
 	interpreter
 }
-
-// ServiceTypeName returns the default service type
-const ServiceTypeName = "service"
 
 // ProcessSpanInterpreterName is the name used for matching this interpreter
 const ProcessSpanInterpreterName = "process"
@@ -25,8 +23,8 @@ func MakeProcessSpanInterpreter(config *config.Config) *ProcessSpanInterpreter {
 }
 
 // Interpret performs the interpretation for the ProcessSpanInterpreter
-func (in *ProcessSpanInterpreter) Interpret(span *pb.Span) *pb.Span {
-	serviceType := ServiceTypeName
+func (in *ProcessSpanInterpreter) Interpret(span *util.SpanWithMeta) *pb.Span {
+	serviceType := util.ServiceTypeName
 
 	// no meta, add a empty map
 	if span.Meta == nil {
@@ -38,7 +36,10 @@ func (in *ProcessSpanInterpreter) Interpret(span *pb.Span) *pb.Span {
 	}
 	span.Meta["span.serviceType"] = serviceType
 
-	return span
+	// create the service identifier using the already interpreted name
+	span.Meta["span.serviceInstanceIdentifier"] = util.CreateServiceInstanceURN(span.Name, span.Hostname, span.PID, span.CreateTime)
+
+	return span.Span
 }
 
 // LanguageToComponentType converts a trace language to a component type

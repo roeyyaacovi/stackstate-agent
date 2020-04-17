@@ -3,6 +3,7 @@ package interpreters
 import (
 	"fmt"
 	"github.com/StackVista/stackstate-agent/pkg/trace/interpreter/config"
+	"github.com/StackVista/stackstate-agent/pkg/trace/interpreter/util"
 	"github.com/StackVista/stackstate-agent/pkg/trace/pb"
 	"strings"
 )
@@ -20,6 +21,12 @@ func MakeDefaultSpanInterpreter(config *config.Config) *DefaultSpanInterpreter {
 // Interpret performs the interpretation for the DefaultSpanInterpreter
 func (in *DefaultSpanInterpreter) Interpret(span *pb.Span) *pb.Span {
 	span.Name = in.ServiceName(span)
+	// no meta, add a empty map
+	if span.Meta == nil {
+		span.Meta = map[string]string{}
+	}
+	// create the service identifier using the already interpreted name
+	span.Meta["span.serviceIdentifier"] = util.CreateServiceURN(span.Name)
 	return span
 }
 

@@ -2,12 +2,18 @@ package interpreters
 
 import (
 	"github.com/StackVista/stackstate-agent/pkg/trace/interpreter/config"
+	"github.com/StackVista/stackstate-agent/pkg/trace/interpreter/util"
 	"github.com/StackVista/stackstate-agent/pkg/trace/pb"
 )
 
-// Interpreter provides the interface for the different interpreters
-type Interpreter interface {
+// SourceInterpreter provides the interface for the different source interpreters
+type SourceInterpreter interface {
 	Interpret(span *pb.Span) *pb.Span
+}
+
+// TypeInterpreter provides the interface for the different type interpreters
+type TypeInterpreter interface {
+	Interpret(span *util.SpanWithMeta) *pb.Span
 }
 
 type interpreter struct {

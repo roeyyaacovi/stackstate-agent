@@ -22,16 +22,27 @@ type featureEndpoint struct {
 	client *http.Client
 }
 
+// Features represents features supported by the StackState backend
 type Features struct {
 	config      *config.AgentConfig
 	endpoint    *featureEndpoint
 	featureChan chan map[string]bool
-	retries int
+	retries     int
 	features    map[string]bool
+}
+
+// NewTestFeatures returns a Features type given the config
+func NewTestFeatures(conf *config.AgentConfig, channel chan map[string]bool) *Features {
+	return makeFeatures(conf, channel)
 }
 
 // NewFeatures returns a Features type given the config
 func NewFeatures(conf *config.AgentConfig) *Features {
+	return makeFeatures(conf, make(chan map[string]bool, 1))
+}
+
+// makeFeatures returns a Features type given the config
+func makeFeatures(conf *config.AgentConfig, channel chan map[string]bool) *Features {
 	endpoint := conf.Endpoints[0]
 	client := newClient(conf, false)
 	if endpoint.NoProxy {
@@ -44,11 +55,12 @@ func NewFeatures(conf *config.AgentConfig) *Features {
 			Endpoint: endpoint,
 			client:   client,
 		},
-		retries: conf.FeaturesConfig.MaxRetries,
-		featureChan: make(chan map[string]bool, 1),
+		retries:     conf.FeaturesConfig.MaxRetries,
+		featureChan: channel,
 	}
 }
 
+// Start begins the request cycle that fetched and populates the features supported by the StackState API
 func (f *Features) Start() {
 	go func() {
 		defer watchdog.LogOnPanic()
@@ -69,9 +81,9 @@ func (f *Features) Start() {
 	f.getSupportedFeatures()
 }
 
+// Stop stops the request ticker
 func (f *Features) Stop() {
-	//f.config.FeaturesConfig.FeatureRequestTicker.Stop()
-	//close(f.featureChan)
+	f.config.FeaturesConfig.FeatureRequestTicker.Stop()
 }
 
 // getSupportedFeatures returns the features supported by the StackState API
@@ -82,7 +94,6 @@ func (f *Features) getSupportedFeatures() {
 	}
 
 	resp, accessErr := f.makeFeatureRequest()
-
 	// Handle error response
 	if accessErr != nil {
 		// Soo we got a 404, meaning we were able to contact stackstate, but it had no features path. We can publish a result

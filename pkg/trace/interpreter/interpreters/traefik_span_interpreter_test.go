@@ -24,14 +24,65 @@ func TestTraefikSpanInterpreter(t *testing.T) {
 		{
 			testCase:    "Should set name and service to 'http.host' when span.kind is 'server'",
 			interpreter: traefikInterpreter,
-			span:        pb.Span{Service: "SpanServiceName", Meta: map[string]string{"http.host": "hostname", "span.kind": "server"}},
-			expected:    pb.Span{Name: "hostname", Service: "hostname", Meta: map[string]string{"http.host": "hostname", "span.kind": "server", "span.serviceType": "traefik"}},
+			span:        pb.Span{
+				Service: "SpanServiceName",
+				Meta: map[string]string{
+					"http.host": "hostname",
+					"span.kind": "server",
+				},
+			},
+			expected:    pb.Span{
+				Name: "hostname",
+				Service: "hostname",
+				Meta: map[string]string{
+					"http.host": "hostname",
+					"span.kind": "server",
+					"span.serviceType": "traefik",
+				},
+			},
 		},
 		{
 			testCase:    "Should set name and service to 'http.host' when span.kind is 'client'",
 			interpreter: traefikInterpreter,
-			span:        pb.Span{Service: "SpanServiceName", Meta: map[string]string{"backend.name": "backend-service-name", "span.kind": "client"}},
-			expected:    pb.Span{Name: "service-name", Service: "service-name", Meta: map[string]string{"backend.name": "backend-service-name", "span.kind": "client", "span.serviceType": "traefik"}},
+			span:        pb.Span{
+				Service: "SpanServiceName",
+				Meta: map[string]string{
+					"backend.name": "backend-service-name",
+					"span.kind": "client",
+				},
+			},
+			expected:    pb.Span{
+				Name: "service-name",
+				Service: "service-name",
+				Meta: map[string]string{
+					"backend.name": "backend-service-name",
+					"span.kind": "client",
+					"span.serviceType": "traefik",
+				},
+			},
+		},
+		{
+			testCase:    "Should create a service instance identifier with the 'http.url' host when span.kind is 'client'",
+			interpreter: traefikInterpreter,
+			span:        pb.Span{
+				Service: "SpanServiceName",
+				Meta: map[string]string{
+					"backend.name": "backend-service-name",
+					"span.kind": "client",
+					"http.url": "https://myhost.com/some/path",
+				},
+			},
+			expected:    pb.Span{
+				Name: "service-name",
+				Service: "service-name",
+				Meta: map[string]string{
+					"backend.name": "backend-service-name",
+					"http.url":"https://myhost.com/some/path",
+					"span.kind": "client",
+					"span.serviceType": "traefik",
+					"span.serviceInstanceIdentifier": "urn:service-instance:/service-name:/myhost.com",
+				},
+			},
 		},
 	} {
 		t.Run(tc.testCase, func(t *testing.T) {

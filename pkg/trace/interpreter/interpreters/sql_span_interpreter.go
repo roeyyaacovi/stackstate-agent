@@ -2,6 +2,7 @@ package interpreters
 
 import (
 	"github.com/StackVista/stackstate-agent/pkg/trace/interpreter/config"
+	"github.com/StackVista/stackstate-agent/pkg/trace/interpreter/util"
 	"github.com/StackVista/stackstate-agent/pkg/trace/pb"
 )
 
@@ -22,7 +23,7 @@ func MakeSQLSpanInterpreter(config *config.Config) *SQLSpanInterpreter {
 }
 
 // Interpret performs the interpretation for the SQLSpanInterpreter
-func (in *SQLSpanInterpreter) Interpret(span *pb.Span) *pb.Span {
+func (in *SQLSpanInterpreter) Interpret(span *util.SpanWithMeta) *pb.Span {
 	dbType := DatabaseTypeName
 
 	// no meta, add a empty map
@@ -35,5 +36,8 @@ func (in *SQLSpanInterpreter) Interpret(span *pb.Span) *pb.Span {
 	}
 	span.Meta["span.serviceType"] = dbType
 
-	return span
+	// create the service identifier using the already interpreted name
+	span.Meta["span.serviceInstanceIdentifier"] = util.CreateServiceInstanceURN(span.Name, span.Hostname, span.PID, span.CreateTime)
+
+	return span.Span
 }
