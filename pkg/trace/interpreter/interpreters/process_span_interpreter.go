@@ -37,7 +37,7 @@ func (in *ProcessSpanInterpreter) Interpret(span *util.SpanWithMeta) *pb.Span {
 	span.Meta["span.serviceType"] = serviceType
 
 	// create the service identifier using the already interpreted name
-	span.Meta["span.serviceInstanceIdentifier"] = util.CreateServiceInstanceURN(span.Name, span.Hostname, span.PID, span.CreateTime)
+	span.Meta["span.serviceInstanceIdentifier"] = util.CreateServiceInstanceURN(span.Meta["span.serviceName"], span.Hostname, span.PID, span.CreateTime)
 
 	return span.Span
 }

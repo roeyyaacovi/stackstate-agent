@@ -18,13 +18,13 @@ func TestDefaultSpanInterpreter(t *testing.T) {
 			testCase:    "Should not change the service name if there are no matching identifiers",
 			interpreter: MakeDefaultSpanInterpreter(&config.Config{}),
 			span:        pb.Span{Service: "SpanServiceName", Meta: map[string]string{"some.meta": "MetaValue"}},
-			expected:    pb.Span{Name: "SpanServiceName", Service: "SpanServiceName", Meta: map[string]string{"some.meta": "MetaValue", "span.serviceIdentifier":"urn:service:/SpanServiceName"}},
+			expected:    pb.Span{Service: "SpanServiceName", Meta: map[string]string{"span.serviceName": "SpanServiceName", "some.meta": "MetaValue", "span.serviceIdentifier":"urn:service:/SpanServiceName"}},
 		},
 		{
 			testCase:    "",
 			interpreter: MakeDefaultSpanInterpreter(config.DefaultInterpreterConfig()),
 			span:        pb.Span{Service: "SpanServiceName", Meta: map[string]string{"db.instance": "Instance"}},
-			expected:    pb.Span{Name: "SpanServiceName:Instance", Service: "SpanServiceName", Meta: map[string]string{"db.instance": "Instance", "span.serviceIdentifier":"urn:service:/SpanServiceName:Instance"}},
+			expected:    pb.Span{Service: "SpanServiceName", Meta: map[string]string{"span.serviceName": "SpanServiceName:Instance", "db.instance": "Instance", "span.serviceIdentifier":"urn:service:/SpanServiceName:Instance"}},
 		},
 	} {
 		t.Run(tc.testCase, func(t *testing.T) {

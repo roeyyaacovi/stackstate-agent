@@ -36,23 +36,21 @@ func (in *TraefikInterpreter) Interpret(span *pb.Span) *pb.Span {
 			// this is the calling service, take the host as Name and Service
 			// e.g. urn:service:/api-service-router.staging.furby.ps
 			if host, found := span.Meta["http.host"]; found {
-				span.Name = host
-				span.Service = host
+				span.Meta["span.serviceName"] = host
 			}
 		case "client":
 			// this is the called service, takes the backend.name as identifier
 			// e.g. "backend-stackstate-books-app" -> urn:service:/stackstate-books-app
 			if backendName, found := span.Meta["backend.name"]; found {
 				backendName = strings.TrimPrefix(backendName, "backend-")
-				span.Name = backendName
-				span.Service = backendName
+				span.Meta["span.serviceName"] = backendName
 			}
 
 			// create the service identifier using the already interpreted name and the meta "http.url"
 			if urlString, found := span.Meta["http.url"]; found {
-				url, err := url.Parse(urlString)
+				parsedUrl, err := url.Parse(urlString)
 				if err == nil {
-					span.Meta["span.serviceInstanceIdentifier"] = createTraefikServiceInstanceURN(span.Name, url.Host)
+					span.Meta["span.serviceInstanceIdentifier"] = createTraefikServiceInstanceURN(span.Meta["span.serviceName"], parsedUrl.Host)
 				}
 			}
 

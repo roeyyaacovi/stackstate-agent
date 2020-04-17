@@ -20,13 +20,14 @@ func MakeDefaultSpanInterpreter(config *config.Config) *DefaultSpanInterpreter {
 
 // Interpret performs the interpretation for the DefaultSpanInterpreter
 func (in *DefaultSpanInterpreter) Interpret(span *pb.Span) *pb.Span {
-	span.Name = in.ServiceName(span)
 	// no meta, add a empty map
 	if span.Meta == nil {
 		span.Meta = map[string]string{}
 	}
+	serviceName := in.ServiceName(span)
+	span.Meta["span.serviceName"] = serviceName
 	// create the service identifier using the already interpreted name
-	span.Meta["span.serviceIdentifier"] = util.CreateServiceURN(span.Name)
+	span.Meta["span.serviceIdentifier"] = util.CreateServiceURN(serviceName)
 	return span
 }
 

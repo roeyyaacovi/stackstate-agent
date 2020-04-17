@@ -21,8 +21,11 @@ func TestSQLSpanInterpreter(t *testing.T) {
 			interpreter: sqlInterpreter,
 			span:        util.SpanWithMeta{
 				Span: &pb.Span{
-					Name: "SpanServiceName",
-					Service: "SpanServiceName",
+					Name: "span-name",
+					Service: "span-service",
+					Meta: map[string]string{
+						"span.serviceName": "span-service",
+					},
 				},
 				SpanMetadata: &util.SpanMetadata{
 					CreateTime: 1586441095,
@@ -33,10 +36,11 @@ func TestSQLSpanInterpreter(t *testing.T) {
 				},
 			},
 			expected:    pb.Span{
-				Name: "SpanServiceName",
-				Service: "SpanServiceName",
+				Name: "span-name",
+				Service: "span-service",
 				Meta: map[string]string{
-					"span.serviceInstanceIdentifier":"urn:service-instance:/SpanServiceName:/hostname:10:1586441095",
+					"span.serviceName": "span-service",
+					"span.serviceInstanceIdentifier":"urn:service-instance:/span-service:/hostname:10:1586441095",
 					"span.serviceType": "database",
 				},
 			},
@@ -46,10 +50,11 @@ func TestSQLSpanInterpreter(t *testing.T) {
 			interpreter: sqlInterpreter,
 			span:        util.SpanWithMeta{
 				Span: &pb.Span{
-					Name: "SpanServiceName",
-					Service: "SpanServiceName",
+					Name: "span-name",
+					Service: "span-service",
 					Meta: map[string]string{
-						"span.serviceInstanceIdentifier":"urn:service-instance:/SpanServiceName:/hostname:10:1586441095",
+						"span.serviceName": "span-service",
+						"span.serviceInstanceIdentifier":"urn:service-instance:/span-service:/hostname:10:1586441095",
 						"db.type": "postgresql",
 					},
 				},
@@ -62,10 +67,11 @@ func TestSQLSpanInterpreter(t *testing.T) {
 				},
 			},
 			expected:    pb.Span{
-				Name: "SpanServiceName",
-				Service: "SpanServiceName",
+				Name: "span-name",
+				Service: "span-service",
 				Meta: map[string]string{
-					"span.serviceInstanceIdentifier":"urn:service-instance:/SpanServiceName:/hostname:10:1586441095",
+					"span.serviceName": "span-service",
+					"span.serviceInstanceIdentifier":"urn:service-instance:/span-service:/hostname:10:1586441095",
 					"db.type": "postgresql",
 					"span.serviceType": "postgresql",
 				},

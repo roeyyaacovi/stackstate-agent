@@ -21,8 +21,11 @@ func TestProcessSpanInterpreter(t *testing.T) {
 			interpreter: processInterpreter,
 			span:        util.SpanWithMeta{
 				Span: &pb.Span{
-					Name: "SpanServiceName",
-					Service: "SpanServiceName",
+					Name: "span-name",
+					Service: "span-service",
+					Meta: map[string]string{
+						"span.serviceName": "span-service",
+					},
 				},
 				SpanMetadata: &util.SpanMetadata{
 					CreateTime: 1586441095,
@@ -33,10 +36,11 @@ func TestProcessSpanInterpreter(t *testing.T) {
 				},
 			},
 			expected:    pb.Span{
-				Name: "SpanServiceName",
-				Service: "SpanServiceName",
+				Name: "span-name",
+				Service: "span-service",
 				Meta: map[string]string{
-					"span.serviceInstanceIdentifier":"urn:service-instance:/SpanServiceName:/hostname:10:1586441095",
+					"span.serviceName": "span-service",
+					"span.serviceInstanceIdentifier":"urn:service-instance:/span-service:/hostname:10:1586441095",
 					"span.serviceType": "service",
 				},
 			},
@@ -46,9 +50,10 @@ func TestProcessSpanInterpreter(t *testing.T) {
 			interpreter: processInterpreter,
 			span:        util.SpanWithMeta{
 				Span: &pb.Span{
-					Name: "SpanServiceName",
-					Service: "SpanServiceName",
+					Name: "span-name",
+					Service: "span-service",
 					Meta: map[string]string{
+						"span.serviceName": "span-service",
 						"language": "unknown",
 					},
 				},
@@ -61,10 +66,11 @@ func TestProcessSpanInterpreter(t *testing.T) {
 				},
 			},
 			expected:    pb.Span{
-				Name: "SpanServiceName",
-				Service: "SpanServiceName",
+				Name: "span-name",
+				Service: "span-service",
 				Meta: map[string]string{
-					"span.serviceInstanceIdentifier":"urn:service-instance:/SpanServiceName:/hostname:10:1586441095",
+					"span.serviceName": "span-service",
+					"span.serviceInstanceIdentifier":"urn:service-instance:/span-service:/hostname:10:1586441095",
 					"language": "unknown", "span.serviceType": "process",
 				},
 			},
@@ -74,9 +80,10 @@ func TestProcessSpanInterpreter(t *testing.T) {
 			interpreter: processInterpreter,
 			span:        util.SpanWithMeta{
 				Span: &pb.Span{
-					Name: "SpanServiceName",
-					Service: "SpanServiceName",
+					Name: "span-name",
+					Service: "span-service",
 					Meta: map[string]string{
+						"span.serviceName": "span-service",
 						"language": "jvm",
 					},
 				},
@@ -89,10 +96,11 @@ func TestProcessSpanInterpreter(t *testing.T) {
 				},
 			},
 			expected:    pb.Span{
-				Name: "SpanServiceName",
-				Service: "SpanServiceName",
+				Name: "span-name",
+				Service: "span-service",
 				Meta: map[string]string{
-					"span.serviceInstanceIdentifier":"urn:service-instance:/SpanServiceName:/hostname:10:1586441095",
+					"span.serviceName": "span-service",
+					"span.serviceInstanceIdentifier":"urn:service-instance:/span-service:/hostname:10:1586441095",
 					"language": "jvm", "span.serviceType": "java",
 				},
 			},

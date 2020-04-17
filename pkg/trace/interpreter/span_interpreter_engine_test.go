@@ -18,7 +18,13 @@ func TestSpanInterpreterEngine(t *testing.T) {
 		{
 			testCase: "Should run the default span interpreter if we have no metadata on the span",
 			span:     pb.Span{Service: "SpanServiceName"},
-			expected: pb.Span{Name: "SpanServiceName", Service: "SpanServiceName", Meta:map[string]string{"span.serviceIdentifier":"urn:service:/SpanServiceName"}},
+			expected: pb.Span{
+				Service: "SpanServiceName",
+				Meta: map[string]string{
+					"span.serviceName":       "SpanServiceName",
+					"span.serviceIdentifier": "urn:service:/SpanServiceName",
+				},
+			},
 		},
 		{
 			testCase: "Should run the sql span interpreter if we have metadata and the type is 'sql'",
@@ -35,18 +41,18 @@ func TestSpanInterpreterEngine(t *testing.T) {
 				},
 			},
 			expected: pb.Span{
-				Name:    "Postgresql:Instance",
 				Service: "Postgresql",
 				Type:    "sql",
 				Meta: map[string]string{
-					"span.starttime":   "1586441095", //Thursday, 9 April 2020 14:04:55
-					"span.hostname":    "hostname",
-					"span.pid":         "10",
-					"span.kind":        "some-kind",
-					"db.type":          "postgresql",
-					"db.instance":      "Instance",
-					"span.serviceType": "postgresql",
-					"span.serviceIdentifier": "urn:service:/Postgresql:Instance",
+					"span.serviceName":               "Postgresql:Instance",
+					"span.starttime":                 "1586441095", //Thursday, 9 April 2020 14:04:55
+					"span.hostname":                  "hostname",
+					"span.pid":                       "10",
+					"span.kind":                      "some-kind",
+					"db.type":                        "postgresql",
+					"db.instance":                    "Instance",
+					"span.serviceType":               "postgresql",
+					"span.serviceIdentifier":         "urn:service:/Postgresql:Instance",
 					"span.serviceInstanceIdentifier": "urn:service-instance:/Postgresql:Instance:/hostname:10:1586441095",
 				},
 			},
@@ -64,16 +70,16 @@ func TestSpanInterpreterEngine(t *testing.T) {
 				},
 			},
 			expected: pb.Span{
-				Name:    "WebServiceName",
 				Service: "WebServiceName",
 				Type:    "web",
 				Meta: map[string]string{
-					"span.starttime":   "1586441095", //Thursday, 9 April 2020 14:04:55
-					"span.hostname":    "hostname",
-					"span.pid":         "10",
-					"span.kind":        "some-kind",
-					"span.serviceType": "service",
-					"span.serviceIdentifier": "urn:service:/WebServiceName",
+					"span.serviceName":               "WebServiceName",
+					"span.starttime":                 "1586441095", //Thursday, 9 April 2020 14:04:55
+					"span.hostname":                  "hostname",
+					"span.pid":                       "10",
+					"span.kind":                      "some-kind",
+					"span.serviceType":               "service",
+					"span.serviceIdentifier":         "urn:service:/WebServiceName",
 					"span.serviceInstanceIdentifier": "urn:service-instance:/WebServiceName:/hostname:10:1586441095",
 				},
 			},
@@ -92,17 +98,17 @@ func TestSpanInterpreterEngine(t *testing.T) {
 				},
 			},
 			expected: pb.Span{
-				Name:    "JavaServiceName",
 				Service: "JavaServiceName",
 				Type:    "server",
 				Meta: map[string]string{
-					"span.starttime":   "1586441095", //Thursday, 9 April 2020 14:04:55
-					"span.hostname":    "hostname",
-					"span.pid":         "10",
-					"span.kind":        "some-kind",
-					"language":         "jvm",
-					"span.serviceType": "java",
-					"span.serviceIdentifier": "urn:service:/JavaServiceName",
+					"span.serviceName":               "JavaServiceName",
+					"span.starttime":                 "1586441095", //Thursday, 9 April 2020 14:04:55
+					"span.hostname":                  "hostname",
+					"span.pid":                       "10",
+					"span.kind":                      "some-kind",
+					"language":                       "jvm",
+					"span.serviceType":               "java",
+					"span.serviceIdentifier":         "urn:service:/JavaServiceName",
 					"span.serviceInstanceIdentifier": "urn:service-instance:/JavaServiceName:/hostname:10:1586441095",
 				},
 			},
@@ -118,14 +124,14 @@ func TestSpanInterpreterEngine(t *testing.T) {
 				},
 			},
 			expected: pb.Span{
-				Name:    "hostname",
-				Service: "hostname",
+				Service: "TraefikServiceName",
 				Meta: map[string]string{
-					"source":           "traefik",
-					"http.host":        "hostname",
-					"span.kind":        "server",
-					"span.serviceType": "traefik",
-					"span.serviceIdentifier":"urn:service:/TraefikServiceName",
+					"span.serviceName":       "hostname",
+					"source":                 "traefik",
+					"http.host":              "hostname",
+					"span.kind":              "server",
+					"span.serviceType":       "traefik",
+					"span.serviceIdentifier": "urn:service:/TraefikServiceName",
 				},
 			},
 		},
