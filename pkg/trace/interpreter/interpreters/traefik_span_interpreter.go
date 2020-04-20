@@ -46,11 +46,11 @@ func (in *TraefikInterpreter) Interpret(span *pb.Span) *pb.Span {
 				span.Meta["span.serviceName"] = backendName
 			}
 
-			// create the service identifier using the already interpreted name and the meta "http.url"
+			// create the service instance identifier using the already interpreted name and the meta "http.url"
 			if urlString, found := span.Meta["http.url"]; found {
 				parsedURL, err := url.Parse(urlString)
 				if err == nil {
-					span.Meta["span.serviceInstanceIdentifier"] = createTraefikServiceInstanceURN(span.Meta["span.serviceName"], parsedURL.Host)
+					span.Meta["span.serviceInstanceURN"] = createTraefikServiceInstanceURN(span.Meta["span.serviceName"], parsedURL.Host)
 				}
 			}
 

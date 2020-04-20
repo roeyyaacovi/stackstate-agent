@@ -81,12 +81,12 @@ func TestTraefikSpanInterpreter(t *testing.T) {
 			expected: pb.Span{
 				Service: "service-name",
 				Meta: map[string]string{
-					"span.serviceName":               "service-name",
-					"backend.name":                   "backend-service-name",
-					"http.url":                       "https://myhost.com/some/path",
-					"span.kind":                      "client",
-					"span.serviceType":               "traefik",
-					"span.serviceInstanceIdentifier": "urn:service-instance:/service-name:/myhost.com",
+					"span.serviceName":        "service-name",
+					"backend.name":            "backend-service-name",
+					"http.url":                "https://myhost.com/some/path",
+					"span.kind":               "client",
+					"span.serviceType":        "traefik",
+					"span.serviceInstanceURN": "urn:service-instance:/service-name:/myhost.com",
 				},
 			},
 		},

@@ -5,15 +5,20 @@ import (
 	"github.com/stretchr/testify/assert"
 	"net/http"
 	"net/http/httptest"
+	"sync"
 	"testing"
 	"time"
 )
 
 func TestFeaturesWithRetries(t *testing.T) {
-	GlobalRetries := 0
+	mux := sync.Mutex{}
+	GlobalRetriesLeft := 0
 	featuresTestServer := httptest.NewServer(
 		http.HandlerFunc(func(w http.ResponseWriter, req *http.Request) {
-			if GlobalRetries >= 3 {
+			mux.Lock()
+			// Lock so only one goroutine at a time can access the map
+			defer mux.Unlock()
+			if GlobalRetriesLeft <= 7 {
 				switch req.URL.Path {
 				case "/features":
 					w.WriteHeader(http.StatusOK)
@@ -38,7 +43,7 @@ func TestFeaturesWithRetries(t *testing.T) {
 	conf.Endpoints = []*config.Endpoint{
 		{Host: featuresTestServer.URL},
 	}
-	conf.FeaturesConfig.FeatureRequestTicker = time.NewTicker(500 * time.Millisecond)
+	conf.FeaturesConfig.FeatureRequestTicker = time.NewTicker(200 * time.Millisecond)
 	conf.FeaturesConfig.MaxRetries = 10
 
 	featureChan := make(chan map[string]bool, 1)
@@ -47,35 +52,42 @@ func TestFeaturesWithRetries(t *testing.T) {
 	// assert feature not supported before fetched
 	assert.False(t, features.FeatureEnabled("some-test-feature"))
 
+	done := make(chan bool)
+	// assert feature supported after fetch completed
+	timeout := time.After(2 * time.Second)
+	assertFunc := func() {
+		assert.True(t, features.GetRetriesLeft() <= 7, "assert we had at least 3 retries in the test scenario, only got: %d", features.GetRetriesLeft())
+		assert.True(t, features.FeatureEnabled("some-test-feature"), "assert that the feature is enabled, so we got the response from the backend")
+		// stop feature fetcher
+		features.Stop()
+		done<-true
+	}
+
+	go func() {
+		assertLoop:
+			for {
+				select {
+				case <-timeout:
+					assertFunc()
+					break assertLoop
+				default:
+					mux.Lock()
+					GlobalRetriesLeft = features.GetRetriesLeft()
+					mux.Unlock()
+
+					// check on each loop if the condition is satisfied yet, otherwise continue until the timeout
+					enabled := features.FeatureEnabled("some-test-feature")
+					if enabled {
+						assertFunc()
+						break assertLoop
+					}
+				}
+			}
+	}()
+
+
 	// start feature fetcher
 	features.Start()
 
-	// assert feature supported after fetch completed
-	timeout := time.After(5 * time.Second)
-	assert := func() {
-		// assert we had at least 3 retries in the test scenario
-		assert.True(t, features.retries >= 3)
-		// assert that the feature is enabled, so we got the response from the backend
-		assert.True(t, features.FeatureEnabled("some-test-feature"))
-		// stop feature fetcher
-		features.Stop()
-	}
-
-	assertLoop:
-		for {
-		select {
-		case <-timeout:
-			assert()
-			break assertLoop
-		default:
-			GlobalRetries = features.retries
-
-			// check on each loop if the condition is satisfied yet, otherwise continue until the timeout
-			enabled := features.FeatureEnabled("some-test-feature")
-			if enabled {
-				assert()
-				break assertLoop
-			}
-		}
-	}
+	<- done
 }

@@ -14,6 +14,7 @@ import (
 	"net/http"
 	"reflect"
 	"strings"
+	"sync"
 	"time"
 )
 
@@ -27,8 +28,9 @@ type Features struct {
 	config      *config.AgentConfig
 	endpoint    *featureEndpoint
 	featureChan chan map[string]bool
-	retries     int
+	retriesLeft int
 	features    map[string]bool
+	mux         sync.Mutex
 }
 
 // NewTestFeatures returns a Features type given the config
@@ -55,7 +57,7 @@ func makeFeatures(conf *config.AgentConfig, channel chan map[string]bool) *Featu
 			Endpoint: endpoint,
 			client:   client,
 		},
-		retries:     conf.FeaturesConfig.MaxRetries,
+		retriesLeft: conf.FeaturesConfig.MaxRetries,
 		featureChan: channel,
 	}
 }
@@ -70,8 +72,10 @@ func (f *Features) Start() {
 			case <-f.config.FeaturesConfig.FeatureRequestTicker.C:
 				f.getSupportedFeatures()
 			case featuresMap := <-f.featureChan:
+				f.mux.Lock()
 				// Set the supported features
 				f.features = featuresMap
+				f.mux.Unlock()
 				// Stop polling and close this channel
 				f.config.FeaturesConfig.FeatureRequestTicker.Stop()
 			}
@@ -86,10 +90,13 @@ func (f *Features) Stop() {
 
 // getSupportedFeatures returns the features supported by the StackState API
 func (f *Features) getSupportedFeatures() {
-	f.retries = f.retries - 1
-	if f.retries == 0 {
+	f.mux.Lock()
+	// Lock so only one goroutine at a time can access the map
+	f.retriesLeft = f.retriesLeft - 1
+	if f.retriesLeft == 0 {
 		f.featureChan <- map[string]bool{}
 	}
+	f.mux.Unlock()
 
 	resp, accessErr := f.makeFeatureRequest()
 	// Handle error response
@@ -141,8 +148,19 @@ func (f *Features) getSupportedFeatures() {
 	f.featureChan <- featuresParsed
 }
 
+// GetRetriesLeft returns the retry count
+func (f *Features) GetRetriesLeft() int {
+	f.mux.Lock()
+	// Lock so only one goroutine at a time can access the map
+	defer f.mux.Unlock()
+	return f.retriesLeft
+}
+
 // FeatureEnabled checks whether a certain feature is enabled
 func (f *Features) FeatureEnabled(feature string) bool {
+	f.mux.Lock()
+	// Lock so only one goroutine at a time can access the map
+	defer f.mux.Unlock()
 	if supported, ok := f.features[feature]; ok {
 		return supported
 	}

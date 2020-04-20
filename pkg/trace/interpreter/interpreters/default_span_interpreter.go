@@ -27,7 +27,7 @@ func (in *DefaultSpanInterpreter) Interpret(span *pb.Span) *pb.Span {
 	serviceName := in.ServiceName(span)
 	span.Meta["span.serviceName"] = serviceName
 	// create the service identifier using the already interpreted name
-	span.Meta["span.serviceIdentifier"] = util.CreateServiceURN(serviceName)
+	span.Meta["span.serviceURN"] = util.CreateServiceURN(serviceName)
 	return span
 }
 
