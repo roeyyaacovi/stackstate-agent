@@ -19,9 +19,9 @@ func TestSQLSpanInterpreter(t *testing.T) {
 		{
 			testCase:    "Should set span.serviceType to 'database' when no db.type metadata exists",
 			interpreter: sqlInterpreter,
-			span:        util.SpanWithMeta{
+			span: util.SpanWithMeta{
 				Span: &pb.Span{
-					Name: "span-name",
+					Name:    "span-name",
 					Service: "span-service",
 					Meta: map[string]string{
 						"span.serviceName": "span-service",
@@ -29,51 +29,51 @@ func TestSQLSpanInterpreter(t *testing.T) {
 				},
 				SpanMetadata: &util.SpanMetadata{
 					CreateTime: 1586441095,
-					Hostname: "hostname",
-					PID: 10,
-					Type: "sql",
-					Kind: "some-kind",
+					Hostname:   "hostname",
+					PID:        10,
+					Type:       "sql",
+					Kind:       "some-kind",
 				},
 			},
-			expected:    pb.Span{
-				Name: "span-name",
+			expected: pb.Span{
+				Name:    "span-name",
 				Service: "span-service",
 				Meta: map[string]string{
-					"span.serviceName": "span-service",
-					"span.serviceInstanceIdentifier":"urn:service-instance:/span-service:/hostname:10:1586441095",
-					"span.serviceType": "database",
+					"span.serviceName":               "span-service",
+					"span.serviceInstanceIdentifier": "urn:service-instance:/span-service:/hostname:10:1586441095",
+					"span.serviceType":               "database",
 				},
 			},
 		},
 		{
 			testCase:    "Should set span.serviceType to 'postgresql' when the db.type is 'postgresql'",
 			interpreter: sqlInterpreter,
-			span:        util.SpanWithMeta{
+			span: util.SpanWithMeta{
 				Span: &pb.Span{
-					Name: "span-name",
+					Name:    "span-name",
 					Service: "span-service",
 					Meta: map[string]string{
-						"span.serviceName": "span-service",
-						"span.serviceInstanceIdentifier":"urn:service-instance:/span-service:/hostname:10:1586441095",
-						"db.type": "postgresql",
+						"span.serviceName":               "span-service",
+						"span.serviceInstanceIdentifier": "urn:service-instance:/span-service:/hostname:10:1586441095",
+						"db.type":                        "postgresql",
 					},
 				},
 				SpanMetadata: &util.SpanMetadata{
 					CreateTime: 1586441095,
-					Hostname: "hostname",
-					PID: 10,
-					Type: "sql",
-					Kind: "some-kind",
+					Hostname:   "hostname",
+					PID:        10,
+					Type:       "sql",
+					Kind:       "some-kind",
 				},
 			},
-			expected:    pb.Span{
-				Name: "span-name",
+			expected: pb.Span{
+				Name:    "span-name",
 				Service: "span-service",
 				Meta: map[string]string{
-					"span.serviceName": "span-service",
-					"span.serviceInstanceIdentifier":"urn:service-instance:/span-service:/hostname:10:1586441095",
-					"db.type": "postgresql",
-					"span.serviceType": "postgresql",
+					"span.serviceName":               "span-service",
+					"span.serviceInstanceIdentifier": "urn:service-instance:/span-service:/hostname:10:1586441095",
+					"db.type":                        "postgresql",
+					"span.serviceType":               "postgresql",
 				},
 			},
 		},

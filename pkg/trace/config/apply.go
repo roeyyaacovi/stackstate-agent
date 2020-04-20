@@ -118,9 +118,9 @@ type queueablePayloadSender struct {
 }
 
 type features struct {
-	HttpRequestTimeoutSecs int `mapstructure:"http_request_timeout_secs"`
-	RetryIntervalSecs int `mapstructure:"retry_interval_secs"`
-	MaxRetries int `mapstructure:"max_retries"`
+	HTTPRequestTimeoutSecs int `mapstructure:"http_request_timeout_secs"`
+	RetryIntervalSecs      int `mapstructure:"retry_interval_secs"`
+	MaxRetries             int `mapstructure:"max_retries"`
 }
 
 func (c *AgentConfig) applyDatadogConfig() error {
@@ -424,8 +424,8 @@ func readFeaturesConfigYaml() featuresconfig.FeaturesConfig {
 		if w.MaxRetries > 0 {
 			c.MaxRetries = w.MaxRetries
 		}
-		if w.HttpRequestTimeoutSecs > 0 {
-			c.HttpRequestTimeoutSecs = time.Duration(w.HttpRequestTimeoutSecs) * time.Second
+		if w.HTTPRequestTimeoutSecs > 0 {
+			c.HTTPRequestTimeoutSecs = time.Duration(w.HTTPRequestTimeoutSecs) * time.Second
 		}
 		if w.RetryIntervalSecs > 0 {
 			c.FeatureRequestTicker = time.NewTicker(time.Duration(w.RetryIntervalSecs) * time.Second)
