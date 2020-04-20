@@ -197,7 +197,7 @@ func newClient(conf *config.AgentConfig, ignoreProxy bool) *http.Client {
 		log.Infof("configuring proxy through: %s", conf.ProxyURL.String())
 		transport.Proxy = http.ProxyURL(conf.ProxyURL)
 	}
-	return &http.Client{Timeout: conf.FeaturesConfig.HttpRequestTimeoutSecs, Transport: transport}
+	return &http.Client{Timeout: conf.FeaturesConfig.HTTPRequestTimeoutSecs, Transport: transport}
 }
 
 // IsTimeout returns true if the error is due to reaching the timeout limit on the http.client
