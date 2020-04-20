@@ -77,8 +77,6 @@ func (f *Features) Start() {
 			}
 		}
 	}()
-
-	f.getSupportedFeatures()
 }
 
 // Stop stops the request ticker
