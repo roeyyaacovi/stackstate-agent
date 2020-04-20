@@ -61,12 +61,3 @@ apm_config:
       enabled: true
     memcached:
       enabled: true
-
-  span_interpreter:
-    service_identifiers:
-      - "db.instance"
-    extraction_fields:
-      create_time: "span.starttime"
-      host_name: "span.hostname"
-      pid: "span.pid"
-      kind: "span.kind"
