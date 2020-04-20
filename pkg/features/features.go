@@ -25,12 +25,13 @@ type featureEndpoint struct {
 
 // Features represents features supported by the StackState backend
 type Features struct {
-	config      *config.AgentConfig
-	endpoint    *featureEndpoint
-	featureChan chan map[string]bool
-	retriesLeft int
-	features    map[string]bool
-	mux         sync.Mutex
+	config               *config.AgentConfig
+	endpoint             *featureEndpoint
+	featureRequestTicker *time.Ticker
+	featureChan          chan map[string]bool
+	retriesLeft          int
+	features             map[string]bool
+	mux                  sync.Mutex
 }
 
 // NewTestFeatures returns a Features type given the config
@@ -57,8 +58,9 @@ func makeFeatures(conf *config.AgentConfig, channel chan map[string]bool) *Featu
 			Endpoint: endpoint,
 			client:   client,
 		},
-		retriesLeft: conf.FeaturesConfig.MaxRetries,
-		featureChan: channel,
+		retriesLeft:          conf.FeaturesConfig.MaxRetries,
+		featureChan:          channel,
+		featureRequestTicker: time.NewTicker(conf.FeaturesConfig.FeatureRequestTickerDuration),
 	}
 }
 
@@ -69,7 +71,7 @@ func (f *Features) Start() {
 		defer close(f.featureChan)
 		for {
 			select {
-			case <-f.config.FeaturesConfig.FeatureRequestTicker.C:
+			case <-f.featureRequestTicker.C:
 				f.getSupportedFeatures()
 			case featuresMap := <-f.featureChan:
 				f.mux.Lock()
@@ -77,7 +79,7 @@ func (f *Features) Start() {
 				f.features = featuresMap
 				f.mux.Unlock()
 				// Stop polling and close this channel
-				f.config.FeaturesConfig.FeatureRequestTicker.Stop()
+				f.featureRequestTicker.Stop()
 			}
 		}
 	}()
@@ -85,7 +87,7 @@ func (f *Features) Start() {
 
 // Stop stops the request ticker
 func (f *Features) Stop() {
-	f.config.FeaturesConfig.FeatureRequestTicker.Stop()
+	f.featureRequestTicker.Stop()
 }
 
 // getSupportedFeatures returns the features supported by the StackState API
@@ -213,7 +215,7 @@ func newClient(conf *config.AgentConfig, ignoreProxy bool) *http.Client {
 		log.Infof("configuring proxy through: %s", conf.ProxyURL.String())
 		transport.Proxy = http.ProxyURL(conf.ProxyURL)
 	}
-	return &http.Client{Timeout: conf.FeaturesConfig.HTTPRequestTimeoutSecs, Transport: transport}
+	return &http.Client{Timeout: conf.FeaturesConfig.HTTPRequestTimeoutDuration, Transport: transport}
 }
 
 // IsTimeout returns true if the error is due to reaching the timeout limit on the http.client

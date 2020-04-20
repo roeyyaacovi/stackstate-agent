@@ -425,10 +425,10 @@ func readFeaturesConfigYaml() featuresconfig.FeaturesConfig {
 			c.MaxRetries = w.MaxRetries
 		}
 		if w.HTTPRequestTimeoutSecs > 0 {
-			c.HTTPRequestTimeoutSecs = time.Duration(w.HTTPRequestTimeoutSecs) * time.Second
+			c.HTTPRequestTimeoutDuration = time.Duration(w.HTTPRequestTimeoutSecs) * time.Second
 		}
 		if w.RetryIntervalSecs > 0 {
-			c.FeatureRequestTicker = time.NewTicker(time.Duration(w.RetryIntervalSecs) * time.Second)
+			c.FeatureRequestTickerDuration = time.Duration(w.RetryIntervalSecs) * time.Second
 		}
 	}
 	return c

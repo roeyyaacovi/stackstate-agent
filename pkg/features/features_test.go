@@ -43,7 +43,7 @@ func TestFeaturesWithRetries(t *testing.T) {
 	conf.Endpoints = []*config.Endpoint{
 		{Host: featuresTestServer.URL},
 	}
-	conf.FeaturesConfig.FeatureRequestTicker = time.NewTicker(200 * time.Millisecond)
+	conf.FeaturesConfig.FeatureRequestTickerDuration = 200 * time.Millisecond
 	conf.FeaturesConfig.MaxRetries = 10
 
 	featureChan := make(chan map[string]bool, 1)
@@ -60,34 +60,33 @@ func TestFeaturesWithRetries(t *testing.T) {
 		assert.True(t, features.FeatureEnabled("some-test-feature"), "assert that the feature is enabled, so we got the response from the backend")
 		// stop feature fetcher
 		features.Stop()
-		done<-true
+		done <- true
 	}
 
 	go func() {
-		assertLoop:
-			for {
-				select {
-				case <-timeout:
+	assertLoop:
+		for {
+			select {
+			case <-timeout:
+				assertFunc()
+				break assertLoop
+			default:
+				mux.Lock()
+				GlobalRetriesLeft = features.GetRetriesLeft()
+				mux.Unlock()
+
+				// check on each loop if the condition is satisfied yet, otherwise continue until the timeout
+				enabled := features.FeatureEnabled("some-test-feature")
+				if enabled {
 					assertFunc()
 					break assertLoop
-				default:
-					mux.Lock()
-					GlobalRetriesLeft = features.GetRetriesLeft()
-					mux.Unlock()
-
-					// check on each loop if the condition is satisfied yet, otherwise continue until the timeout
-					enabled := features.FeatureEnabled("some-test-feature")
-					if enabled {
-						assertFunc()
-						break assertLoop
-					}
 				}
 			}
+		}
 	}()
-
 
 	// start feature fetcher
 	features.Start()
 
-	<- done
+	<-done
 }
