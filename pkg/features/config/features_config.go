@@ -14,7 +14,7 @@ type FeaturesConfig struct {
 func DefaultFeaturesConfig() FeaturesConfig {
 	return FeaturesConfig{
 		HTTPRequestTimeoutDuration:   10 * time.Second,
-		FeatureRequestTickerDuration: 30 * time.Second,
-		MaxRetries:                   10,
+		FeatureRequestTickerDuration: 60 * time.Second,
+		MaxRetries:                   15,
 	}
 }
