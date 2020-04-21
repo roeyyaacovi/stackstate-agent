@@ -53,7 +53,19 @@ def test_java_traces(host):
             {
                 "type": "service",
                 "external_id": lambda e_id: e_id == "urn:service:/traefik",
-                "data": lambda d: d["name"] == "traefik"
+                "data": lambda d: d["name"] == "traefik" and d["serviceType"] == "traefik"
+            },
+            {
+                "type": "service",
+                "external_id": lambda e_id: e_id == "urn:service:/stackstate-books-app",
+                "data": lambda d: d["name"] == "stackstate-books-app" and
+                d["service"] == "traefik" and  d["serviceType"] == "traefik"
+            },
+            {
+                "type": "service-instance",
+                "external_id": lambda e_id: re.compile("urn:service-instance:/stackstate-books-app:/.*\..*\..*\..*").findall(e_id)
+                "data": lambda d: "stackstate-books-app-" in d["name"] and
+                d["service"] == "traefik" and  d["serviceType"] == "traefik"
             },
             {
                 "type": "service",
@@ -62,10 +74,10 @@ def test_java_traces(host):
                 d["service"] == "traefik"
             },
             {
-                "type": "service",
-                "external_id": lambda e_id: e_id == "urn:service:/stackstate-books-app",
-                "data": lambda d: d["name"] == "stackstate-books-app" and
-                d["service"] == "stackstate-books-app"
+                "type": "service-instance",
+                "external_id": lambda e_id: re.compile("urn:service-instance:/stackstate-authors-app:/.*\..*\..*\..*").findall(e_id)
+                "data": lambda d: "stackstate-authors-app-" in d["name"] and
+                d["service"] == "traefik" and  d["serviceType"] == "traefik"
             },
             {
                 "type": "service",
