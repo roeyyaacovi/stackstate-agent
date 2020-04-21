@@ -36,6 +36,7 @@ func (in *TraefikInterpreter) Interpret(span *pb.Span) *pb.Span {
 			// this is the calling service, take the host as Name and Service
 			// e.g. urn:service:/api-service-router.staging.furby.ps
 			if host, found := span.Meta["http.host"]; found {
+				span.Meta["span.serviceURN"] = util.CreateServiceURN(host)
 				span.Meta["span.serviceName"] = host
 			}
 		case "client":
@@ -43,6 +44,7 @@ func (in *TraefikInterpreter) Interpret(span *pb.Span) *pb.Span {
 			// e.g. "backend-stackstate-books-app" -> urn:service:/stackstate-books-app
 			if backendName, found := span.Meta["backend.name"]; found {
 				backendName = strings.TrimPrefix(backendName, "backend-")
+				span.Meta["span.serviceURN"] = util.CreateServiceURN(backendName)
 				span.Meta["span.serviceName"] = backendName
 			}
 

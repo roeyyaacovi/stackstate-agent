@@ -27,6 +27,14 @@ def _relation_data(json_data, type_name, external_id_assert_fn):
     return None
 
 
+def test_agent_ok(host):
+    def assert_healthy():
+        c = "docker inspect ubuntu_stackstate-agent_1 |  jq -r '.[0].State.Health.Status'"
+        assert host.check_output(c) == "healthy"
+
+    util.wait_until(assert_healthy, 100, 5)
+
+
 def test_java_traces(host):
     def assert_ok():
         c = "curl -H Host:stackstate-books-app.docker.localhost -s -o /dev/null -w \"%{http_code}\" http://localhost/stackstate-books-app/listbooks"
@@ -49,17 +57,15 @@ def test_java_traces(host):
             },
             {
                 "type": "service",
-                "external_id": lambda e_id: e_id == "urn:service:/traefik:stackstate-authors-app.docker.localhost",
-                "data": lambda d: d["name"] == "stackstate-authors-app.docker.localhost" and
-                "urn:service:/stackstate-authors-app.docker.localhost" in d["identifiers"] and
-                d["service"] == "stackstate-authors-app.docker.localhost"
+                "external_id": lambda e_id: e_id == "urn:service:/stackstate-authors-app",
+                "data": lambda d: d["name"] == "stackstate-authors-app" and
+                d["service"] == "traefik"
             },
             {
                 "type": "service",
-                "external_id": lambda e_id: e_id == "urn:service:/traefik:stackstate-books-app.docker.localhost",
-                "data": lambda d: d["name"] == "stackstate-books-app.docker.localhost" and
-                "urn:service:/stackstate-books-app.docker.localhost" in d["identifiers"] and
-                d["service"] == "stackstate-books-app.docker.localhost"
+                "external_id": lambda e_id: e_id == "urn:service:/stackstate-books-app",
+                "data": lambda d: d["name"] == "stackstate-books-app" and
+                d["service"] == "stackstate-books-app"
             },
             {
                 "type": "service",

@@ -131,7 +131,7 @@ func TestSpanInterpreterEngine(t *testing.T) {
 					"http.host":        "hostname",
 					"span.kind":        "server",
 					"span.serviceType": "traefik",
-					"span.serviceURN":  "urn:service:/TraefikServiceName",
+					"span.serviceURN":  "urn:service:/hostname",
 				},
 			},
 		},

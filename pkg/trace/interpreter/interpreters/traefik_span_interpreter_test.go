@@ -40,6 +40,7 @@ func TestTraefikSpanInterpreter(t *testing.T) {
 				Service: "service-name",
 				Meta: map[string]string{
 					"span.serviceName": "hostname",
+					"span.serviceURN":  "urn:service:/hostname",
 					"http.host":        "hostname",
 					"span.kind":        "server",
 					"span.serviceType": "traefik",
@@ -60,6 +61,7 @@ func TestTraefikSpanInterpreter(t *testing.T) {
 				Service: "service-name",
 				Meta: map[string]string{
 					"span.serviceName": "service-name",
+					"span.serviceURN":  "urn:service:/service-name",
 					"backend.name":     "backend-service-name",
 					"span.kind":        "client",
 					"span.serviceType": "traefik",
@@ -86,6 +88,7 @@ func TestTraefikSpanInterpreter(t *testing.T) {
 					"http.url":                "https://myhost.com/some/path",
 					"span.kind":               "client",
 					"span.serviceType":        "traefik",
+					"span.serviceURN":         "urn:service:/service-name",
 					"span.serviceInstanceURN": "urn:service-instance:/service-name:/myhost.com",
 				},
 			},
