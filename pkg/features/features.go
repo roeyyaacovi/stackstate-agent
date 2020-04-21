@@ -7,7 +7,7 @@ import (
 	"github.com/StackVista/stackstate-agent/pkg/trace/config"
 	"github.com/StackVista/stackstate-agent/pkg/trace/info"
 	"github.com/StackVista/stackstate-agent/pkg/trace/watchdog"
-	"github.com/StackVista/stackstate-agent/pkg/util/log"
+	log "github.com/cihub/seelog"
 	"io"
 	"io/ioutil"
 	"net"
