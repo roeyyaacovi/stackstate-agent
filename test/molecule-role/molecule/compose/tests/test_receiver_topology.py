@@ -78,7 +78,8 @@ def test_java_traces(host):
                 "external_id": lambda e_id: e_id == "urn:service:/stackstate-authors-app",
                 "data": lambda d: (
                                     d["name"] == "stackstate-authors-app" and
-                                    d["service"] == "traefik"
+                                    d["service"] == "traefik" and
+                                    d["serviceType"] == "traefik"
                                   )
             },
             {
@@ -93,12 +94,20 @@ def test_java_traces(host):
             {
                 "type": "service",
                 "external_id": lambda e_id: e_id == "urn:service:/stackstate-authors-app",
-                "data": lambda d: d["name"] == "stackstate-authors-app"
+                "data": lambda d: (
+                                    d["name"] == "stackstate-authors-app" and
+                                    d["service"] == "stackstate-authors-app" and
+                                    d["serviceType"] == "java"
+                                  )
             },
             {
                 "type": "service",
                 "external_id": lambda e_id: e_id == "urn:service:/stackstate-books-app",
-                "data": lambda d: d["name"] == "stackstate-books-app"
+                "data": lambda d: (
+                                    d["name"] == "stackstate-books-app" and
+                                    d["service"] == "stackstate-books-app" and
+                                    d["serviceType"] == "java"
+                                  )
             },
             {
                 "type": "service",
@@ -108,12 +117,20 @@ def test_java_traces(host):
             {
                 "type": "service-instance",
                 "external_id": lambda e_id: re.compile(r"urn:service-instance:/stackstate-authors-app:/.*:.*:.*").findall(e_id),
-                "data": lambda d: d["service"] == "stackstate-authors-app"
+                "data": lambda d: (
+                                    "stackstate-authors-app-" in d["name"] and
+                                    d["service"] == "stackstate-authors-app" and
+                                    d["serviceType"] == "java"
+                                  )
             },
             {
                 "type": "service-instance",
                 "external_id": lambda e_id: re.compile(r"urn:service-instance:/stackstate-books-app:/.*:.*:.*").findall(e_id),
-                "data": lambda d: d["service"] == "stackstate-books-app"
+                "data": lambda d: (
+                                    "stackstate-books-app-" in d["name"] and
+                                    d["service"] == "stackstate-books-app" and
+                                    d["serviceType"] == "java"
+                                  )
             },
         ]
 
