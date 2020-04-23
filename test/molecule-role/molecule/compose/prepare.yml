@@ -15,6 +15,7 @@
         dest: "/home/ubuntu/{{ item }}"
       with_items:
         - docker-compose.yml
+        - create-topics.sh
     - name: Gather facts (we need the docker network interface ip)
       setup:
     - name: Run Docker compose
