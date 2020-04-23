@@ -25,7 +25,7 @@ services:
       interval: 1s
       timeout: 10s
       retries: 10
-    mem_limit: 2G
+    mem_limit: 1G
   receiver:
     image: "quay.io/stackstate/stackstate-receiver:${STACKSTATE_BRANCH}"
     ports:
