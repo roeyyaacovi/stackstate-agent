@@ -54,58 +54,58 @@ def test_java_traces(host):
                 )
             },
             {
-                "assertion": "Should find the stackstate-books-app traefik service",
+                "assertion": "Should find the stackstate-books-app.docker.localhost traefik service",
                 "type": "service",
-                "external_id": lambda e_id: e_id == "urn:service:/stackstate-books-app",
+                "external_id": lambda e_id: e_id == "urn:service:/stackstate-books-app.docker.localhost",
                 "data": lambda d: (
-                    d["name"] == "stackstate-books-app" and
+                    d["name"] == "stackstate-books-app.docker.localhost" and
                     d["service"] == "traefik" and
                     "serviceType" in d and
                     d["serviceType"] == "traefik"
                 )
             },
             {
-                "assertion": "Should find the stackstate-books-app traefik service instance",
+                "assertion": "Should find the stackstate-books-app.docker.localhost traefik service instance",
                 "type": "service-instance",
                 "external_id": lambda e_id: re.compile(
-                    r"urn:service-instance:/stackstate-books-app:/.*\..*\..*\..*").findall(e_id),
+                    r"urn:service-instance:/stackstate-books-app.docker.localhost:/.*\..*\..*\..*").findall(e_id),
                 "data": lambda d: (
-                    "stackstate-books-app-" in d["name"] and
+                    "stackstate-books-app.docker.localhost-" in d["name"] and
                     d["service"] == "traefik" and
                     "serviceType" in d and
                     d["serviceType"] == "traefik"
                 )
             },
             {
-                "assertion": "Should find the stackstate-authors-app traefik service",
+                "assertion": "Should find the stackstate-authors-app.docker.localhost traefik service",
                 "type": "service",
-                "external_id": lambda e_id: e_id == "urn:service:/stackstate-authors-app",
+                "external_id": lambda e_id: e_id == "urn:service:/stackstate-authors-app.docker.localhost",
                 "data": lambda d: (
-                    d["name"] == "stackstate-authors-app" and
+                    d["name"] == "stackstate-authors-app.docker.localhost" and
                     d["service"] == "traefik" and
                     "serviceType" in d and
                     d["serviceType"] == "traefik"
                 )
             },
             {
-                "assertion": "Should find the stackstate-authors-app traefik service instance",
+                "assertion": "Should find the stackstate-authors-app.docker.localhost traefik service instance",
                 "type": "service-instance",
                 "external_id": lambda e_id: re.compile(
-                    r"urn:service-instance:/stackstate-authors-app:/.*\..*\..*\..*").findall(e_id),
+                    r"urn:service-instance:/stackstate-authors-app.docker.localhost:/.*\..*\..*\..*").findall(e_id),
                 "data": lambda d: (
-                    "stackstate-authors-app-" in d["name"] and
+                    "stackstate-authors-app.docker.localhost-" in d["name"] and
                     d["service"] == "traefik" and
                     "serviceType" in d and
                     d["serviceType"] == "traefik"
                 )
             },
             {
-                "assertion": "Should find the stackstate-authors-app java service",
+                "assertion": "Should find the stackstate-authors-app.docker.localhost java service",
                 "type": "service",
-                "external_id": lambda e_id: e_id == "urn:service:/stackstate-authors-app",
+                "external_id": lambda e_id: e_id == "urn:service:/stackstate-authors-app.docker.localhost",
                 "data": lambda d: (
-                    d["name"] == "stackstate-authors-app" and
-                    d["service"] == "stackstate-authors-app" and
+                    d["name"] == "stackstate-authors-app.docker.localhost" and
+                    d["service"] == "stackstate-authors-app.docker.localhost" and
                     "serviceType" in d and
                     d["serviceType"] == "java"
                 )
@@ -113,34 +113,34 @@ def test_java_traces(host):
             {
                 "assertion": "Should find the stackstate-books-app java service",
                 "type": "service",
-                "external_id": lambda e_id: e_id == "urn:service:/stackstate-books-app",
+                "external_id": lambda e_id: e_id == "urn:service:/stackstate-books-app.docker.localhost",
                 "data": lambda d: (
-                    d["name"] == "stackstate-books-app" and
-                    d["service"] == "stackstate-books-app" and
+                    d["name"] == "stackstate-books-app.docker.localhost" and
+                    d["service"] == "stackstate-books-app.docker.localhost" and
                     "serviceType" in d and
                     d["serviceType"] == "java"
                 )
             },
             {
-                "assertion": "Should find the stackstate-authors-app java service instance",
+                "assertion": "Should find the stackstate-authors-app.docker.localhost java service instance",
                 "type": "service-instance",
                 "external_id": lambda e_id: re.compile(
-                    r"urn:service-instance:/stackstate-authors-app:/.*:.*:.*").findall(e_id),
+                    r"urn:service-instance:/stackstate-authors-app.docker.localhost:/.*:.*:.*").findall(e_id),
                 "data": lambda d: (
-                    "stackstate-authors-app-" in d["name"] and
-                    d["service"] == "stackstate-authors-app" and
+                    "stackstate-authors-app.docker.localhost-" in d["name"] and
+                    d["service"] == "stackstate-authors-app.docker.localhost" and
                     "serviceType" in d and
                     d["serviceType"] == "java"
                 )
             },
             {
-                "assertion": "Should find the stackstate-books-app java service",
+                "assertion": "Should find the stackstate-books-app.docker.localhost java service",
                 "type": "service-instance",
-                "external_id": lambda e_id: re.compile(r"urn:service-instance:/stackstate-books-app:/.*:.*:.*").findall(
+                "external_id": lambda e_id: re.compile(r"urn:service-instance:/stackstate-books-app.docker.localhost:/.*:.*:.*").findall(
                     e_id),
                 "data": lambda d: (
-                    "stackstate-books-app-" in d["name"] and
-                    d["service"] == "stackstate-books-app" and
+                    "stackstate-books-app.docker.localhost-" in d["name"] and
+                    d["service"] == "stackstate-books-app.docker.localhost" and
                     "serviceType" in d and
                     d["serviceType"] == "java"
                 )
@@ -172,11 +172,11 @@ def test_java_traces(host):
                              "instance",
                 "type": "has",
                 "external_id": lambda e_id: re.compile(
-                    r"urn:service:/stackstate-authors-app->urn:service-instance:/stackstate-authors-app:/.*:.*:.*"
+                    r"urn:service:/stackstate-authors-app.docker.localhost->urn:service-instance:/stackstate-authors-app.docker.localhost:/.*:.*:.*"
                 ).findall(e_id),
                 "data": lambda d: (
-                    d["sourceData"]["service"] == "stackstate-authors-app" and
-                    d["targetData"]["service"] == "stackstate-authors-app"
+                    d["sourceData"]["service"] == "stackstate-authors-app.docker.localhost" and
+                    d["targetData"]["service"] == "stackstate-authors-app.docker.localhost"
                 )
             },
             {
@@ -184,11 +184,11 @@ def test_java_traces(host):
                              "instance",
                 "type": "has",
                 "external_id": lambda e_id: re.compile(
-                    r"urn:service:/stackstate-books-app->urn:service-instance:/stackstate-books-app:/.*:.*:.*").findall(
+                    r"urn:service:/stackstate-books-app.docker.localhost->urn:service-instance:/stackstate-books-app.docker.localhost:/.*:.*:.*").findall(
                     e_id),
                 "data": lambda d: (
-                    d["sourceData"]["service"] == "stackstate-books-app" and
-                    d["targetData"]["service"] == "stackstate-books-app"
+                    d["sourceData"]["service"] == "stackstate-books-app.docker.localhost" and
+                    d["targetData"]["service"] == "stackstate-books-app.docker.localhost"
                 )
             },
             {
@@ -196,11 +196,11 @@ def test_java_traces(host):
                              "instance",
                 "type": "has",
                 "external_id": lambda e_id: re.compile(
-                    r"urn:service:/stackstate-authors-app->urn:service-instance:/stackstate-authors-app:/.*\..*\..*\..*")
+                    r"urn:service:/stackstate-authors-app.docker.localhost->urn:service-instance:/stackstate-authors-app.docker.localhost:/.*\..*\..*\..*")
                 .findall(e_id),
                 "data": lambda d: (
-                    d["sourceData"]["name"] == "stackstate-authors-app" and
-                    "stackstate-authors-app-" in d["targetData"]["name"]
+                    d["sourceData"]["name"] == "stackstate-authors-app.docker.localhost" and
+                    "stackstate-authors-app.docker.localhost-" in d["targetData"]["name"]
                 )
             },
             {
@@ -208,18 +208,18 @@ def test_java_traces(host):
                              "instance",
                 "type": "has",
                 "external_id": lambda e_id: re.compile(
-                    r"urn:service:/stackstate-books-app->urn:service-instance:/stackstate-books-app:/.*\..*\..*\..*"
+                    r"urn:service:/stackstate-books-app.docker.localhost->urn:service-instance:/stackstate-books-app.docker.localhost:/.*\..*\..*\..*"
                 ).findall(e_id),
                 "data": lambda d: (
-                    d["sourceData"]["name"] == "stackstate-books-app" and
-                    "stackstate-books-app-" in d["targetData"]["name"]
+                    d["sourceData"]["name"] == "stackstate-books-app.docker.localhost" and
+                    "stackstate-books-app.docker.localhost-" in d["targetData"]["name"]
                 )
             },
             # traefik -> books
             {
                 "assertion": "Should find the 'calls' relation between traefik and the stackstate books app",
                 "type": "calls",
-                "external_id": lambda e_id: e_id == "urn:service:/traefik->urn:service:/stackstate-books-app",
+                "external_id": lambda e_id: e_id == "urn:service:/traefik->urn:service:/stackstate-books-app.docker.localhost",
             },
             {
                 "assertion": "Should find the callback 'calls' relation between the stackstate books app and traefik",
@@ -230,40 +230,40 @@ def test_java_traces(host):
             {
                 "assertion": "Should find the 'calls' relation between the stackstate books app and postgresql",
                 "type": "calls",
-                "external_id": lambda e_id: e_id == "urn:service:/stackstate-books-app->urn:service:/postgresql:app",
+                "external_id": lambda e_id: e_id == "urn:service:/stackstate-books-app.docker.localhost->urn:service:/postgresql:app",
             },
             {
                 "assertion": "Should find the 'calls' relation between the stackstate books app instance and postgresql",
                 "type": "calls",
                 "external_id": lambda e_id: re.compile(
-                    r"urn:service-instance:/stackstate-books-app:/.*:.*:.*>urn:service:/postgresql:app"
+                    r"urn:service-instance:/stackstate-books-app.docker.localhost:/.*:.*:.*>urn:service:/postgresql:app"
                 ).findall(e_id),
             },
             # # traefik -> authors
             {
                 "assertion": "Should find the 'calls' relation between traefik and the stackstate authors app",
                 "type": "calls",
-                "external_id": lambda e_id: e_id == "urn:service:/traefik->urn:service:/stackstate-authors-app",
+                "external_id": lambda e_id: e_id == "urn:service:/traefik->urn:service:/stackstate-authors-app.docker.localhost",
             },
             {
                 "assertion": "Should find the 'calls' relation between the stackstate authors app and a stackstate "
                              "authors app instance",
                 "type": "calls",
                 "external_id": lambda e_id: re.compile(
-                    r"urn:service:/stackstate-authors-app->urn:service-instance:/stackstate-authors-app:/.*:.*:.*"
+                    r"urn:service:/stackstate-authors-app.docker.localhost->urn:service-instance:/stackstate-authors-app.docker.localhost:/.*:.*:.*"
                 ).findall(e_id),
             },
             {
                 "assertion": "Should find the 'calls' relation between the stackstate authors app and postgresql",
                 "type": "calls",
-                "external_id": lambda e_id: e_id == "urn:service:/stackstate-authors-app->urn:service:/postgresql:app",
+                "external_id": lambda e_id: e_id == "urn:service:/stackstate-authors-app.docker.localhost->urn:service:/postgresql:app",
             },
             {
                 "assertion": "Should find the 'calls' relation between the stackstate authors app instance and "
                              "postgresql",
                 "type": "calls",
                 "external_id": lambda e_id: re.compile(
-                    r"urn:service-instance:/stackstate-authors-app:/.*:.*:.*>urn:service:/postgresql:app"
+                    r"urn:service-instance:/stackstate-authors-app.docker.localhost:/.*:.*:.*>urn:service:/postgresql:app"
                 ).findall(e_id),
             },
             # # callbacks ?
