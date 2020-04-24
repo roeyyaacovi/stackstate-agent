@@ -109,7 +109,7 @@ func NewAgent(ctx context.Context, conf *config.AgentConfig) *Agent {
 		ServiceExtractor:      se,
 		ServiceMapper:         sm,
 		SpanInterpreterEngine: sie,
-		SupportedFeatures: 	   sf,
+		SupportedFeatures:     sf,
 		obfuscator:            obf,
 		tracePkgChan:          tracePkgChan,
 		conf:                  conf,
