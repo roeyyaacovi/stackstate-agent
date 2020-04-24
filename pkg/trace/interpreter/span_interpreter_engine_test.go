@@ -53,7 +53,6 @@ func TestSpanInterpreterEngine(t *testing.T) {
 					"db.instance":             "Instance",
 					"span.serviceType":        "postgresql",
 					"span.serviceURN":         "urn:service:/Postgresql:Instance",
-					"span.serviceInstanceURN": "urn:service-instance:/Postgresql:Instance:/hostname:10:1586441095",
 				},
 			},
 		},
