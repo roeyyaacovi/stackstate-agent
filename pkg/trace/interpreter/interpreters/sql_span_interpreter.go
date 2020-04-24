@@ -36,8 +36,5 @@ func (in *SQLSpanInterpreter) Interpret(span *util.SpanWithMeta) *pb.Span {
 	}
 	span.Meta["span.serviceType"] = dbType
 
-	// create the service instance identifier using the already interpreted name
-	span.Meta["span.serviceInstanceURN"] = util.CreateServiceInstanceURN(span.Meta["span.serviceName"], span.Hostname, span.PID, span.CreateTime)
-
 	return span.Span
 }

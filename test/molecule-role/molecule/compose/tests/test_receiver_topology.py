@@ -222,7 +222,7 @@ def test_java_traces(host):
                 "external_id": lambda e_id: e_id == "urn:service:/traefik->urn:service:/stackstate-books-app",
             },
             {
-                "assertion": "Should find the 'calls' relation between the stackstate books app and traefik",
+                "assertion": "Should find the callback 'calls' relation between the stackstate books app and traefik",
                 "type": "calls",
                 "external_id": lambda e_id: e_id == "urn:service:/stackstate-books-app.docker.localhost->urn:service"
                                                     ":/traefik",
@@ -231,6 +231,13 @@ def test_java_traces(host):
                 "assertion": "Should find the 'calls' relation between the stackstate books app and postgresql",
                 "type": "calls",
                 "external_id": lambda e_id: e_id == "urn:service:/stackstate-books-app->urn:service:/postgresql:app",
+            },
+            {
+                "assertion": "Should find the 'calls' relation between the stackstate books app instance and postgresql",
+                "type": "calls",
+                "external_id": lambda e_id: re.compile(
+                    r"urn:service-instance:/stackstate-books-app:/.*:.*:.*>urn:service:/postgresql:app"
+                ).findall(e_id),
             },
             # # traefik -> authors
             {
@@ -251,20 +258,30 @@ def test_java_traces(host):
                 "type": "calls",
                 "external_id": lambda e_id: e_id == "urn:service:/stackstate-authors-app->urn:service:/postgresql:app",
             },
+            {
+                "assertion": "Should find the 'calls' relation between the stackstate authors app instance and "
+                             "postgresql",
+                "type": "calls",
+                "external_id": lambda e_id: re.compile(
+                    r"urn:service-instance:/stackstate-authors-app:/.*:.*:.*>urn:service:/postgresql:app"
+                ).findall(e_id),
+            },
             # # callbacks ?
             {
                 "assertion": "Should find the 'calls' relation between the stackstate authors app and traefik",
                 "type": "calls",
-                "external_id": lambda e_id: re.compile(r"urn:service:/stackstate-authors-app.docker.localhost->urn"
-                                                       r":service:/traefik").findall(e_id),
+                "external_id": lambda e_id: re.compile(
+                    r"urn:service:/stackstate-authors-app.docker.localhost->urn:service:/traefik"
+                ).findall(e_id),
             },
             # # ?
             {
                 "assertion": "Should find the 'calls' relation between the stackstate books app and the stackstate "
                              "authors app",
                 "type": "calls",
-                "external_id": lambda e_id: e_id == "urn:service:/stackstate-books-app->urn:service:/stackstate"
-                                                    "-authors-app.docker.localhost",
+                "external_id": lambda e_id: (
+                    e_id == "urn:service:/stackstate-books-app->urn:service:/stackstate-authors-app.docker.localhost"
+                ),
             },
         ]
 

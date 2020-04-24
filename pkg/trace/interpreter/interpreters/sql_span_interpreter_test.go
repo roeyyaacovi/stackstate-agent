@@ -40,7 +40,6 @@ func TestSQLSpanInterpreter(t *testing.T) {
 				Service: "span-service",
 				Meta: map[string]string{
 					"span.serviceName":        "span-service",
-					"span.serviceInstanceURN": "urn:service-instance:/span-service:/hostname:10:1586441095",
 					"span.serviceType":        "database",
 				},
 			},
@@ -54,7 +53,6 @@ func TestSQLSpanInterpreter(t *testing.T) {
 					Service: "span-service",
 					Meta: map[string]string{
 						"span.serviceName":        "span-service",
-						"span.serviceInstanceURN": "urn:service-instance:/span-service:/hostname:10:1586441095",
 						"db.type":                 "postgresql",
 					},
 				},
@@ -71,7 +69,6 @@ func TestSQLSpanInterpreter(t *testing.T) {
 				Service: "span-service",
 				Meta: map[string]string{
 					"span.serviceName":        "span-service",
-					"span.serviceInstanceURN": "urn:service-instance:/span-service:/hostname:10:1586441095",
 					"db.type":                 "postgresql",
 					"span.serviceType":        "postgresql",
 				},

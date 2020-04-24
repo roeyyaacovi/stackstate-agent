@@ -43,6 +43,7 @@ services:
         condition: service_healthy
     environment:
       KAFKA_BROKERS: kafka:9092
+      STACKSTATE_CORRELATE_LOG_LEVEL: "DEBUG"
     mem_limit: 1G
   topic-api:
     image: "quay.io/stackstate/stackstate-topic-api:${STACKSTATE_BRANCH}"
