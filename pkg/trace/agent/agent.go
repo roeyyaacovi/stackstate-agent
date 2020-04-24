@@ -213,9 +213,7 @@ func (a *Agent) Process(t pb.Trace) {
 	for _, span := range t {
 		a.obfuscator.Obfuscate(span)
 		Truncate(span)
-		if a.SupportedFeatures.FeatureEnabled("interpreted-spans") {
-			a.SpanInterpreterEngine.Interpret(span)
-		}
+		a.SpanInterpreterEngine.Interpret(span)
 	}
 	a.Replacer.Replace(&t)
 
