@@ -13,6 +13,7 @@
       copy:
         src: "files/{{ item }}"
         dest: "/home/ubuntu/{{ item }}"
+        mode: preserve
       with_items:
         - docker-compose.yml
         - create-topics.sh
