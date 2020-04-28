@@ -40,6 +40,12 @@ func NewSpanInterpreterEngine(agentConfig *config.AgentConfig) *SpanInterpreterE
 
 // Interpret interprets spans using the configured SpanInterpreterEngine
 func (se *SpanInterpreterEngine) Interpret(span *pb.Span) *pb.Span {
+
+	// check if span is pre-interpreted by the trace client
+	if _, found := span.Meta["span.serviceURN"]; found {
+		return span
+	}
+
 	span = se.DefaultSpanInterpreter.Interpret(span)
 
 	meta, err := se.extractSpanMetadata(span)

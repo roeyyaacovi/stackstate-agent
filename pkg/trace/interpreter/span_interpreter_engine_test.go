@@ -134,6 +134,29 @@ func TestSpanInterpreterEngine(t *testing.T) {
 				},
 			},
 		},
+		{
+			testCase: "Should not interpret an already interpreted span",
+			span: pb.Span{
+				Service: "TraefikServiceName",
+				Meta: map[string]string{
+					"source":           "traefik",
+					"http.host":        "hostname",
+					"span.kind":        "server",
+					"span.serviceType": "traefik",
+					"span.serviceURN":  "some-different-external-urn-format",
+				},
+			},
+			expected: pb.Span{
+				Service: "TraefikServiceName",
+				Meta: map[string]string{
+					"source":           "traefik",
+					"http.host":        "hostname",
+					"span.kind":        "server",
+					"span.serviceType": "traefik",
+					"span.serviceURN":  "some-different-external-urn-format",
+				},
+			},
+		},
 	} {
 		t.Run(tc.testCase, func(t *testing.T) {
 			actual := sie.Interpret(&tc.span)
