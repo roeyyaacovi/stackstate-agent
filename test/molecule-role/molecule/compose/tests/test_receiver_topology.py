@@ -87,7 +87,7 @@ def test_java_traces(host):
                     d["serviceType"] == "traefik"
                 )
             },
-            { # TODO: Backend names in Traefik replace . with -, find a way to change the backend name
+            {  # TODO: Backend names in Traefik replace . with -, find a way to change the backend name
                 "assertion": "Should find the stackstate-authors-app traefik service instance",
                 "type": "service-instance",
                 "external_id": lambda e_id: re.compile(
