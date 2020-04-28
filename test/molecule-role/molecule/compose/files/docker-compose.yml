@@ -86,7 +86,7 @@ services:
       - "traefik.frontend.rule=Host:stackstate-books-app"
       - "traefik.backend=stackstate-books-app"
     environment:
-      MAVEN_OPTS: "-Dsts.service.name=stackstate-books-app -Dsts.agent.host=${DOCKER_HOST_IP} -Dsts.agent.port=8126 -Dstackstate.slf4j.simpleLogger.defaultLogLevel=debug -javaagent:/sts-java-agent.jar"
+      MAVEN_OPTS: "-Dsts.service.name=stackstate-books-app -Dauthors-app.traefik.host.header=stackstate-authors-app -Dsts.agent.host=${DOCKER_HOST_IP} -Dsts.agent.port=8126 -Dstackstate.slf4j.simpleLogger.defaultLogLevel=debug -javaagent:/sts-java-agent.jar"
     mem_limit: 2G
   stackstate-authors-app:
     image: "quay.io/stackstate/trace-java-demo:authors-app-stac-4879-trace-interpreter"
@@ -102,7 +102,7 @@ services:
       - "traefik.frontend.rule=Host:stackstate-authors-app"
       - "traefik.backend=stackstate-authors-app"
     environment:
-      MAVEN_OPTS: "-authors-app.traefik.host.header=stackstate-authors-app -Dsts.service.name=stackstate-authors-app -Dsts.agent.host=${DOCKER_HOST_IP} -Dsts.agent.port=8126 -Dstackstate.slf4j.simpleLogger.defaultLogLevel=debug -javaagent:/sts-java-agent.jar"
+      MAVEN_OPTS: "-Dsts.service.name=stackstate-authors-app -Dsts.agent.host=${DOCKER_HOST_IP} -Dsts.agent.port=8126 -Dstackstate.slf4j.simpleLogger.defaultLogLevel=debug -javaagent:/sts-java-agent.jar"
     mem_limit: 2G
   traefik:
     image: traefik:v1.7.12
