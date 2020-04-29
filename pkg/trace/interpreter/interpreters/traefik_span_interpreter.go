@@ -53,6 +53,7 @@ func (in *TraefikInterpreter) Interpret(span *pb.Span) *pb.Span {
 				parsedURL, err := url.Parse(urlString)
 				if err == nil {
 					span.Meta["span.serviceInstanceURN"] = createTraefikServiceInstanceURN(span.Meta["span.serviceName"], parsedURL.Host)
+					span.Meta["span.serviceInstanceHost"] = parsedURL.Host
 				}
 			}
 

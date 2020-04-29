@@ -73,7 +73,7 @@ services:
       - "traefik.frontend.rule=Host:stackstate-demo-db"
       - "traefik.backend=stackstate-demo-db"
   stackstate-books-app:
-    image: "quay.io/stackstate/trace-java-demo:books-app-stac-4879-trace-interpreter"
+    image: "quay.io/stackstate/trace-java-demo:books-app-master"
     pid: "host"
     ports:
       - '8081-8091:8081'
@@ -89,7 +89,7 @@ services:
       MAVEN_OPTS: "-Dsts.service.name=stackstate-books-app -Dauthors-app.traefik.host.header=stackstate-authors-app -Dsts.agent.host=${DOCKER_HOST_IP} -Dsts.agent.port=8126 -Dstackstate.slf4j.simpleLogger.defaultLogLevel=debug -javaagent:/sts-java-agent.jar"
     mem_limit: 2G
   stackstate-authors-app:
-    image: "quay.io/stackstate/trace-java-demo:authors-app-stac-4879-trace-interpreter"
+    image: "quay.io/stackstate/trace-java-demo:authors-app-master"
     pid: "host"
     ports:
       - '8092-8099:8081'

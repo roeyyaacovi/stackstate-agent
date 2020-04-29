@@ -90,6 +90,7 @@ func TestTraefikSpanInterpreter(t *testing.T) {
 					"span.serviceType":        "traefik",
 					"span.serviceURN":         "urn:service:/service-name",
 					"span.serviceInstanceURN": "urn:service-instance:/service-name:/myhost.com",
+					"span.serviceInstanceHost": "myhost.com",
 				},
 			},
 		},
