@@ -181,6 +181,7 @@ func TestSendV1ServiceChecks(t *testing.T) {
 	s := NewSerializer(f)
 	// check runs are disabled by default for StackState
 	s.enableCheckRuns = true
+	s.enableServiceChecks = true
 
 	payload := &testPayload{}
 	err := s.SendServiceChecks(payload)
