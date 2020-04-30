@@ -256,6 +256,8 @@ func TestSendSketch(t *testing.T) {
 	f.On("SubmitSketchSeries", payloads, protobufExtraHeaders).Return(nil).Times(1)
 
 	s := NewSerializer(f)
+	// check runs are disabled by default for StackState
+	s.enableSketches = true
 
 	payload := &testPayload{}
 	err := s.SendSketch(payload)

@@ -3,7 +3,6 @@ package interpreters
 import (
 	"fmt"
 	"github.com/StackVista/stackstate-agent/pkg/trace/interpreter/config"
-	"github.com/StackVista/stackstate-agent/pkg/trace/interpreter/util"
 	"github.com/StackVista/stackstate-agent/pkg/trace/pb"
 	"net/url"
 	"strings"
@@ -23,7 +22,7 @@ func MakeTraefikInterpreter(config *config.Config) *TraefikInterpreter {
 }
 
 // Interpret performs the interpretation for the TraefikInterpreter
-func (in *TraefikInterpreter) Interpret(span *pb.Span) *pb.Span {
+func (t *TraefikInterpreter) Interpret(span *pb.Span) *pb.Span {
 
 	// no meta, add a empty map
 	if span.Meta == nil {
@@ -36,7 +35,7 @@ func (in *TraefikInterpreter) Interpret(span *pb.Span) *pb.Span {
 			// this is the calling service, take the host as Name and Service
 			// e.g. urn:service:/api-service-router.staging.furby.ps
 			if host, found := span.Meta["http.host"]; found {
-				span.Meta["span.serviceURN"] = util.CreateServiceURN(host)
+				span.Meta["span.serviceURN"] = t.CreateServiceURN(host)
 				span.Meta["span.serviceName"] = host
 			}
 		case "client":
@@ -44,7 +43,7 @@ func (in *TraefikInterpreter) Interpret(span *pb.Span) *pb.Span {
 			// e.g. "backend-stackstate-books-app" -> urn:service:/stackstate-books-app
 			if backendName, found := span.Meta["backend.name"]; found {
 				backendName = strings.TrimPrefix(backendName, "backend-")
-				span.Meta["span.serviceURN"] = util.CreateServiceURN(backendName)
+				span.Meta["span.serviceURN"] = t.CreateServiceURN(backendName)
 				span.Meta["span.serviceName"] = backendName
 			}
 
@@ -52,7 +51,7 @@ func (in *TraefikInterpreter) Interpret(span *pb.Span) *pb.Span {
 			if urlString, found := span.Meta["http.url"]; found {
 				parsedURL, err := url.Parse(urlString)
 				if err == nil {
-					span.Meta["span.serviceInstanceURN"] = createTraefikServiceInstanceURN(span.Meta["span.serviceName"], parsedURL.Hostname())
+					span.Meta["span.serviceInstanceURN"] = t.CreateServiceInstanceURN(span.Meta["span.serviceName"], parsedURL.Hostname())
 					span.Meta["span.serviceInstanceHost"] = parsedURL.Hostname()
 				}
 			}
@@ -65,7 +64,7 @@ func (in *TraefikInterpreter) Interpret(span *pb.Span) *pb.Span {
 	return span
 }
 
-// createTraefikServiceInstanceURN creates the urn identifier for all service instance components
-func createTraefikServiceInstanceURN(serviceName string, hostname string) string {
-	return fmt.Sprintf("urn:%s:/%s:/%s", util.ServiceInstanceTypeName, serviceName, hostname)
+// CreateServiceInstanceURN creates the urn identifier for all traefik service instance components
+func (t *TraefikInterpreter) CreateServiceInstanceURN(serviceName string, hostname string) string {
+	return fmt.Sprintf("urn:%s:/%s:/%s", ServiceInstanceTypeName, serviceName, hostname)
 }

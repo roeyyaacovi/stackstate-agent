@@ -2,7 +2,7 @@ package interpreters
 
 import (
 	"github.com/StackVista/stackstate-agent/pkg/trace/interpreter/config"
-	"github.com/StackVista/stackstate-agent/pkg/trace/interpreter/util"
+	"github.com/StackVista/stackstate-agent/pkg/trace/interpreter/model"
 	"github.com/StackVista/stackstate-agent/pkg/trace/pb"
 	"github.com/stretchr/testify/assert"
 	"testing"
@@ -13,13 +13,13 @@ func TestSQLSpanInterpreter(t *testing.T) {
 	for _, tc := range []struct {
 		testCase    string
 		interpreter *SQLSpanInterpreter
-		span        util.SpanWithMeta
+		span        model.SpanWithMeta
 		expected    pb.Span
 	}{
 		{
 			testCase:    "Should set span.serviceType to 'database' when no db.type metadata exists",
 			interpreter: sqlInterpreter,
-			span: util.SpanWithMeta{
+			span: model.SpanWithMeta{
 				Span: &pb.Span{
 					Name:    "span-name",
 					Service: "span-service",
@@ -27,7 +27,7 @@ func TestSQLSpanInterpreter(t *testing.T) {
 						"span.serviceName": "span-service",
 					},
 				},
-				SpanMetadata: &util.SpanMetadata{
+				SpanMetadata: &model.SpanMetadata{
 					CreateTime: 1586441095,
 					Hostname:   "hostname",
 					PID:        10,
@@ -47,7 +47,7 @@ func TestSQLSpanInterpreter(t *testing.T) {
 		{
 			testCase:    "Should set span.serviceType to 'postgresql' when the db.type is 'postgresql'",
 			interpreter: sqlInterpreter,
-			span: util.SpanWithMeta{
+			span: model.SpanWithMeta{
 				Span: &pb.Span{
 					Name:    "span-name",
 					Service: "span-service",
@@ -56,7 +56,7 @@ func TestSQLSpanInterpreter(t *testing.T) {
 						"db.type":          "postgresql",
 					},
 				},
-				SpanMetadata: &util.SpanMetadata{
+				SpanMetadata: &model.SpanMetadata{
 					CreateTime: 1586441095,
 					Hostname:   "hostname",
 					PID:        10,

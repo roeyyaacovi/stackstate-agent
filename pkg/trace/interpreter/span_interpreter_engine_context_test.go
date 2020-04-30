@@ -2,7 +2,7 @@ package interpreter
 
 import (
 	"github.com/StackVista/stackstate-agent/pkg/trace/interpreter/config"
-	"github.com/StackVista/stackstate-agent/pkg/trace/interpreter/util"
+	"github.com/StackVista/stackstate-agent/pkg/trace/interpreter/model"
 	"github.com/StackVista/stackstate-agent/pkg/trace/pb"
 	"github.com/stretchr/testify/assert"
 	"testing"
@@ -27,7 +27,7 @@ func TestSpanInterpreterEngineContext(t *testing.T) {
 			"span.kind":      "some-kind",
 		},
 	})
-	expectedMeta := util.SpanMetadata{
+	expectedMeta := model.SpanMetadata{
 		CreateTime: int64(1586441095),
 		Hostname:   "hostname",
 		PID:        int(10),
@@ -48,7 +48,7 @@ func TestSpanInterpreterEngineContext(t *testing.T) {
 			"span.kind":     "some-kind",
 		},
 	})
-	expectedMeta = util.SpanMetadata{
+	expectedMeta = model.SpanMetadata{
 		CreateTime: int64(1586441095),
 		Hostname:   "hostname",
 		PID:        int(10),

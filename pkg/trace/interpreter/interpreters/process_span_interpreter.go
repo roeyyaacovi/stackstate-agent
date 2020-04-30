@@ -2,7 +2,7 @@ package interpreters
 
 import (
 	"github.com/StackVista/stackstate-agent/pkg/trace/interpreter/config"
-	"github.com/StackVista/stackstate-agent/pkg/trace/interpreter/util"
+	"github.com/StackVista/stackstate-agent/pkg/trace/interpreter/model"
 	"github.com/StackVista/stackstate-agent/pkg/trace/pb"
 )
 
@@ -23,8 +23,8 @@ func MakeProcessSpanInterpreter(config *config.Config) *ProcessSpanInterpreter {
 }
 
 // Interpret performs the interpretation for the ProcessSpanInterpreter
-func (in *ProcessSpanInterpreter) Interpret(span *util.SpanWithMeta) *pb.Span {
-	serviceType := util.ServiceTypeName
+func (in *ProcessSpanInterpreter) Interpret(span *model.SpanWithMeta) *pb.Span {
+	serviceType := ServiceTypeName
 
 	// no meta, add a empty map
 	if span.Meta == nil {
@@ -37,7 +37,7 @@ func (in *ProcessSpanInterpreter) Interpret(span *util.SpanWithMeta) *pb.Span {
 	span.Meta["span.serviceType"] = serviceType
 
 	// create the service instance identifier using the already interpreted name
-	span.Meta["span.serviceInstanceURN"] = util.CreateServiceInstanceURN(span.Meta["span.serviceName"], span.Hostname, span.PID, span.CreateTime)
+	span.Meta["span.serviceInstanceURN"] = in.CreateServiceInstanceURN(span.Meta["span.serviceName"], span.Hostname, span.PID, span.CreateTime)
 
 	return span.Span
 }

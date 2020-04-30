@@ -2,7 +2,7 @@ package interpreters
 
 import (
 	"github.com/StackVista/stackstate-agent/pkg/trace/interpreter/config"
-	"github.com/StackVista/stackstate-agent/pkg/trace/interpreter/util"
+	"github.com/StackVista/stackstate-agent/pkg/trace/interpreter/model"
 	"github.com/StackVista/stackstate-agent/pkg/trace/pb"
 	"github.com/stretchr/testify/assert"
 	"testing"
@@ -13,13 +13,13 @@ func TestProcessSpanInterpreter(t *testing.T) {
 	for _, tc := range []struct {
 		testCase    string
 		interpreter *ProcessSpanInterpreter
-		span        util.SpanWithMeta
+		span        model.SpanWithMeta
 		expected    pb.Span
 	}{
 		{
 			testCase:    "Should set span.serviceType to 'service' when no language metadata exists",
 			interpreter: processInterpreter,
-			span: util.SpanWithMeta{
+			span: model.SpanWithMeta{
 				Span: &pb.Span{
 					Name:    "span-name",
 					Service: "span-service",
@@ -27,7 +27,7 @@ func TestProcessSpanInterpreter(t *testing.T) {
 						"span.serviceName": "span-service",
 					},
 				},
-				SpanMetadata: &util.SpanMetadata{
+				SpanMetadata: &model.SpanMetadata{
 					CreateTime: 1586441095,
 					Hostname:   "hostname",
 					PID:        10,
@@ -48,7 +48,7 @@ func TestProcessSpanInterpreter(t *testing.T) {
 		{
 			testCase:    "Should set span.serviceType to 'process' when an unknown language is detected",
 			interpreter: processInterpreter,
-			span: util.SpanWithMeta{
+			span: model.SpanWithMeta{
 				Span: &pb.Span{
 					Name:    "span-name",
 					Service: "span-service",
@@ -57,7 +57,7 @@ func TestProcessSpanInterpreter(t *testing.T) {
 						"language":         "unknown",
 					},
 				},
-				SpanMetadata: &util.SpanMetadata{
+				SpanMetadata: &model.SpanMetadata{
 					CreateTime: 1586441095,
 					Hostname:   "hostname",
 					PID:        10,
@@ -78,7 +78,7 @@ func TestProcessSpanInterpreter(t *testing.T) {
 		{
 			testCase:    "Should set span.serviceType to 'java' when the language is 'jvm'",
 			interpreter: processInterpreter,
-			span: util.SpanWithMeta{
+			span: model.SpanWithMeta{
 				Span: &pb.Span{
 					Name:    "span-name",
 					Service: "span-service",
@@ -87,7 +87,7 @@ func TestProcessSpanInterpreter(t *testing.T) {
 						"language":         "jvm",
 					},
 				},
-				SpanMetadata: &util.SpanMetadata{
+				SpanMetadata: &model.SpanMetadata{
 					CreateTime: 1586441095,
 					Hostname:   "hostname",
 					PID:        10,

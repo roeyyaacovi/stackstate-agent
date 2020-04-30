@@ -2,7 +2,7 @@ package interpreters
 
 import (
 	"github.com/StackVista/stackstate-agent/pkg/trace/interpreter/config"
-	"github.com/StackVista/stackstate-agent/pkg/trace/interpreter/util"
+	"github.com/StackVista/stackstate-agent/pkg/trace/interpreter/model"
 	"github.com/StackVista/stackstate-agent/pkg/trace/pb"
 )
 
@@ -23,7 +23,7 @@ func MakeSQLSpanInterpreter(config *config.Config) *SQLSpanInterpreter {
 }
 
 // Interpret performs the interpretation for the SQLSpanInterpreter
-func (in *SQLSpanInterpreter) Interpret(span *util.SpanWithMeta) *pb.Span {
+func (in *SQLSpanInterpreter) Interpret(span *model.SpanWithMeta) *pb.Span {
 	dbType := DatabaseTypeName
 
 	// no meta, add a empty map

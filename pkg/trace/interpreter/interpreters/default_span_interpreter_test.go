@@ -21,7 +21,7 @@ func TestDefaultSpanInterpreter(t *testing.T) {
 			expected:    pb.Span{Service: "SpanServiceName", Meta: map[string]string{"span.serviceName": "SpanServiceName", "some.meta": "MetaValue", "span.serviceURN": "urn:service:/SpanServiceName"}},
 		},
 		{
-			testCase:    "",
+			testCase:    "Should add 'db.instance' from metadata to the span.service when generating the span.serviceName",
 			interpreter: MakeDefaultSpanInterpreter(config.DefaultInterpreterConfig()),
 			span:        pb.Span{Service: "SpanServiceName", Meta: map[string]string{"db.instance": "Instance"}},
 			expected:    pb.Span{Service: "SpanServiceName", Meta: map[string]string{"span.serviceName": "SpanServiceName:Instance", "db.instance": "Instance", "span.serviceURN": "urn:service:/SpanServiceName:Instance"}},

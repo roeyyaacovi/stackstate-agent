@@ -4,7 +4,7 @@ import (
 	"github.com/StackVista/stackstate-agent/pkg/trace/config"
 	interpreterConfig "github.com/StackVista/stackstate-agent/pkg/trace/interpreter/config"
 	"github.com/StackVista/stackstate-agent/pkg/trace/interpreter/interpreters"
-	"github.com/StackVista/stackstate-agent/pkg/trace/interpreter/util"
+	"github.com/StackVista/stackstate-agent/pkg/trace/interpreter/model"
 	"github.com/StackVista/stackstate-agent/pkg/trace/pb"
 )
 
@@ -59,7 +59,7 @@ func (se *SpanInterpreterEngine) Interpret(span *pb.Span) *pb.Span {
 		}
 	} else {
 		// process different span types
-		spanWithMeta := &util.SpanWithMeta{Span: span, SpanMetadata: meta}
+		spanWithMeta := &model.SpanWithMeta{Span: span, SpanMetadata: meta}
 
 		// interpret the type if we have a interpreter, otherwise run it through the process interpreter.
 		if interpreter, found := se.TypeInterpreters[meta.Type]; found {

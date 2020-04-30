@@ -1,4 +1,4 @@
-package util
+package model
 
 import "github.com/StackVista/stackstate-agent/pkg/trace/pb"
 

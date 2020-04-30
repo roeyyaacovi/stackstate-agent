@@ -3,7 +3,7 @@ package interpreter
 import (
 	"fmt"
 	"github.com/StackVista/stackstate-agent/pkg/trace/interpreter/config"
-	"github.com/StackVista/stackstate-agent/pkg/trace/interpreter/util"
+	"github.com/StackVista/stackstate-agent/pkg/trace/interpreter/model"
 	"github.com/StackVista/stackstate-agent/pkg/trace/pb"
 	"github.com/pkg/errors"
 	"strconv"
@@ -18,7 +18,7 @@ const kindField = "span.kind"
 // SpanInterpreterEngineContext helper functions that is used by the span interpreter engine context
 type SpanInterpreterEngineContext interface {
 	nanosToMillis(nanos int64) int64
-	extractSpanMetadata(span *pb.Span) (*util.SpanMetadata, error)
+	extractSpanMetadata(span *pb.Span) (*model.SpanMetadata, error)
 }
 
 type spanInterpreterEngineContext struct {
@@ -34,7 +34,7 @@ func (c *spanInterpreterEngineContext) nanosToMillis(nanos int64) int64 {
 	return nanos / int64(time.Millisecond)
 }
 
-func (c *spanInterpreterEngineContext) extractSpanMetadata(span *pb.Span) (*util.SpanMetadata, error) {
+func (c *spanInterpreterEngineContext) extractSpanMetadata(span *pb.Span) (*model.SpanMetadata, error) {
 
 	var hostname string
 	var createTime int64
@@ -71,7 +71,7 @@ func (c *spanInterpreterEngineContext) extractSpanMetadata(span *pb.Span) (*util
 		createTime = c.nanosToMillis(span.Start)
 	}
 
-	return &util.SpanMetadata{
+	return &model.SpanMetadata{
 		CreateTime: createTime,
 		Hostname:   hostname,
 		PID:        pid,

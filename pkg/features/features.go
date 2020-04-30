@@ -179,7 +179,7 @@ func (f *Features) makeFeatureRequest() (*http.Response, error) {
 	req.Header.Add("content-encoding", "identity")
 	req.Header.Add("sts-api-key", f.endpoint.APIKey)
 	req.Header.Add("sts-hostname", f.endpoint.Host)
-	req.Header.Add("sts-traceagentversion", info.Version)
+	req.Header.Add("sts-agent-version", info.Version)
 
 	resp, err := f.endpoint.client.Do(req)
 	if err != nil {
