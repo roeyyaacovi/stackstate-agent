@@ -201,6 +201,8 @@ func TestSendServiceChecks(t *testing.T) {
 	defer mockConfig.Set("use_v2_api.service_checks", nil)
 
 	s := NewSerializer(f)
+	// service checks are disabled by default for StackState
+	s.enableServiceChecks = true
 
 	payload := &testPayload{}
 	err := s.SendServiceChecks(payload)
