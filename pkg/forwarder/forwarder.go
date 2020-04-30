@@ -252,20 +252,23 @@ func (f *DefaultForwarder) SubmitServiceChecks(payload Payloads, extra http.Head
 
 // SubmitSketchSeries will send payloads to Datadog backend - PROTOTYPE FOR PERCENTILE
 func (f *DefaultForwarder) SubmitSketchSeries(payload Payloads, extra http.Header) error {
-	// we don't care about this
-	return nil
+	transactions := f.createHTTPTransactions(sketchSeriesEndpoint, payload, true, extra)
+	transactionsSketchSeries.Add(1)
+	return f.sendHTTPTransactions(transactions)
 }
 
 // SubmitHostMetadata will send a host_metadata tag type payload to Datadog backend.
 func (f *DefaultForwarder) SubmitHostMetadata(payload Payloads, extra http.Header) error {
-	// we don't care about this
-	return nil
+	transactions := f.createHTTPTransactions(hostMetadataEndpoint, payload, false, extra)
+	transactionsHostMetadata.Add(1)
+	return f.sendHTTPTransactions(transactions)
 }
 
 // SubmitMetadata will send a metadata type payload to Datadog backend.
 func (f *DefaultForwarder) SubmitMetadata(payload Payloads, extra http.Header) error {
-	// we don't care about this
-	return nil
+	transactions := f.createHTTPTransactions(metadataEndpoint, payload, false, extra)
+	transactionsMetadata.Add(1)
+	return f.sendHTTPTransactions(transactions)
 }
 
 // SubmitV1Series will send timeserie to v1 endpoint (this will be remove once
@@ -279,8 +282,9 @@ func (f *DefaultForwarder) SubmitV1Series(payload Payloads, extra http.Header) e
 // SubmitV1CheckRuns will send service checks to v1 endpoint (this will be removed once
 // the backend handles v2 endpoints).
 func (f *DefaultForwarder) SubmitV1CheckRuns(payload Payloads, extra http.Header) error {
-	// we don't care about this
-	return nil
+	transactions := f.createHTTPTransactions(v1CheckRunsEndpoint, payload, true, extra)
+	transactionsCheckRunsV1.Add(1)
+	return f.sendHTTPTransactions(transactions)
 }
 
 // SubmitV1Intake will send payloads to the universal `/intake/` endpoint used by Agent v.5

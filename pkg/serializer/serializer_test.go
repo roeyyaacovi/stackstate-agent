@@ -179,6 +179,8 @@ func TestSendV1ServiceChecks(t *testing.T) {
 	f.On("SubmitV1CheckRuns", jsonPayloads, jsonExtraHeadersWithCompression).Return(nil).Times(1)
 
 	s := NewSerializer(f)
+	// check runs are disabled by default for StackState
+	s.enableCheckRuns = true
 
 	payload := &testPayload{}
 	err := s.SendServiceChecks(payload)
